@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // it, but for real protection, remove this block before going live.
   const params = new URLSearchParams(location.search);
   if (params.get('preview') === '1') {
-    startCourse({ id: 'preview-user', email: 'preview@local' });
+    startCourse({ id: 'preview-user', email: 'preview@local', preview: true });
     return;
   }
   try {
@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="episodes/episode-01/episode-01.css">
 <style>
   :root{
     --sunset-orange:#FF8A3D;
@@ -368,6 +369,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   .cliff{font-family:var(--font-hand); font-size:20px; color:var(--sunset-pink); margin-top:18px;}
 
   .muted{opacity:.7;}
+  .bubble-time{display:block; font-size:9.5px; opacity:.5; margin-top:3px; text-align:right;}
+  .voice-note{display:inline-flex; align-items:center; gap:6px; font-weight:700;}
+  .voice-note button{background:var(--ocean-blue); border:none; color:#fff; width:26px; height:26px; border-radius:50%; font-size:11px;}
+  .voice-tr{font-size:12.5px; opacity:.8; margin-top:5px; font-style:italic;}
+  .polaroid{cursor:pointer;}
+  .polaroid.locked{cursor:default;}
+  .memory-detail{margin-top:16px; padding:14px 16px; border-radius:var(--radius-md); background:rgba(255,255,255,0.07); border-left:3px solid var(--sunset-orange);}
+  .memory-detail b{font-family:var(--font-display); font-size:17px;}
+  .memory-detail p{margin:6px 0 0; font-size:13.5px; line-height:1.5;}
+  .item-row{display:flex; gap:12px; align-items:center; padding:10px 12px; border-radius:var(--radius-md); background:rgba(255,255,255,0.06); border:1px solid var(--glass-border); margin-bottom:8px;}
+  .item-row .ico{font-size:24px;}
+  .item-row small{display:block; opacity:.7; font-size:12px;}
+  .shelf > *, .content-row > *{min-width:0;}   /* let the story strip scroll instead of widening the page on phones */
+  @media (max-width: 720px){ .note-behind{right:0;} }
+  .journal-auto{font-size:10px; padding:2px 8px; border-radius:999px; background:rgba(109,187,117,0.2); color:#a9e6ae; margin-left:6px; font-family:var(--font-body);}
 
   /* ================= RESPONSIVE ================= */
   @media (max-width: 1080px){
@@ -490,11 +506,11 @@ const DATA = {
     seasonLabel: "Season 1 · Episode 1"
   },
   messages: [
-    { id:"mia", name:"Mia", flag:"ua", color:"#5AB6F9", snippet:"Did you land safely?! Miss you already 😭", time:"Just now", unread:1, online:true,
+    { id:"mia", name:"Mia", flag:"ua", color:"#5AB6F9", snippet:"Safe flight!! Miss you already 😭", time:"Yesterday", unread:0, online:true,
       chat: [
-        { from:"them", text:"Did you land safely?! Miss you already 😭" },
-        { from:"me", text:"Just landed! LAX is HUGE." },
-        { from:"them", text:"Tell me EVERYTHING the second you can!" }
+        { id:"pre1", from:"them", text:"Text me the SECOND you land!! ✈️" },
+        { id:"pre2", from:"me", text:"I promise! Boarding now 💙" },
+        { id:"pre3", from:"them", text:"Safe flight!! Miss you already 😭" }
       ] }
   ],
   deskItems: [
@@ -517,6 +533,8 @@ const DATA = {
   achievements: [
     { id:"explorer", icon:"🌴", name:"California Explorer", progress:0, total:10 },
     { id:"first-talk", icon:"💬", name:"First Conversation", progress:0, total:1 },
+    { id:"problem-solver", icon:"🧳", name:"Problem Solver", progress:0, total:1 },
+    { id:"la-newcomer", icon:"🌴", name:"LA Newcomer", progress:0, total:1 },
     { id:"coffee", icon:"☕", name:"Coffee Lover", progress:0, total:5, locked:true },
     { id:"photos", icon:"📷", name:"Photo Collector", progress:0, total:10 },
     { id:"friend", icon:"🤝", name:"New Friend", progress:0, total:1, locked:true },
@@ -546,6 +564,8 @@ const DATA = {
     { id:"mall", name:"Mall", x:80, y:62, status:"locked", note:"Locked — keep the story going." }
   ],
   memories: [
+    { id:"m0", cap:"First Steps in LA", icon:"✈️", unlocked:false, imgKey:"arrival",
+      desc:"My first hours in Los Angeles. A new beginning, a big airport, and one unexpected adventure." },
     { id:"m1", cap:"First Night in LA", icon:"🌙", unlocked:false },
     { id:"m2", cap:"First Coffee", icon:"☕", unlocked:false },
     { id:"m3", cap:"New Home", icon:"🏡", unlocked:false },
@@ -579,8 +599,14 @@ const DATA = {
     { title:"Quiet Rain", by:"Sarah's Mix", genre:"lo-fi", locked:true },
     { title:"Encore", by:"Sophie's Mix", genre:"pop", locked:true }
   ],
-  journal: []
+  journal: [],
+  episodes: {}   // per-episode story progress (filled by episode-01.js)
 };
+
+/* Escape anything a student typed (or that came from storage) before it goes into innerHTML. */
+function escHTML(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
 /* Realistic Los Angeles weather for this stretch of August: mostly sunny,
    with the marine-layer mornings and heat spikes that actually happen this
@@ -659,18 +685,23 @@ function renderTopbar(){
 }
 
 function renderMission(){
+  const m = (window.LilaStory && LilaStory.missionCard()) ||
+    { eyebrow:"Today's mission", title:DATA.mission.title, desc:DATA.mission.desc, cta:'Start', icon:DATA.mission.icon };
   document.getElementById('missionNote').innerHTML = `
     <div class="mission-star">⭐</div>
     <div class="mission-top">
-      <div class="mission-eyebrow">Today's mission</div>
-      <div class="mission-title">${DATA.mission.title}</div>
-      <p class="mission-desc">${DATA.mission.desc}</p>
+      <div class="mission-eyebrow">${escHTML(m.eyebrow)}</div>
+      <div class="mission-title">${escHTML(m.title)}</div>
+      <p class="mission-desc">${escHTML(m.desc)}</p>
     </div>
     <div class="mission-cta">
-      <button class="btn-start" id="startBtn">Start</button>
-      <div class="mission-cup">${DATA.mission.icon}</div>
+      <button class="btn-start" id="startBtn">${escHTML(m.cta)}</button>
+      <div class="mission-cup">${m.icon}</div>
     </div>`;
-  document.getElementById('startBtn').addEventListener('click', ()=>openModal('episode'));
+  document.getElementById('startBtn').addEventListener('click', ()=>{
+    if(window.LilaStory) LilaStory.onMissionClick();
+    else alert('Episode 1 could not load. Please refresh the page.');
+  });
 }
 
 function renderMessages(){
@@ -681,11 +712,11 @@ function renderMessages(){
       <div class="msg-thread" data-thread="${m.id}">
         <div class="thread-avatar" style="background:${m.color}; ${m.dark?'color:#2a1a0a;':''}">${faceSVG(m.dark)}${m.online ? '<span class="online-dot"></span>' : ''}</div>
         <div class="thread-info">
-          <div class="name">${m.name} ${m.flag ? FLAGS[m.flag] : ''}</div>
-          <div class="snippet">${m.snippet}</div>
+          <div class="name">${escHTML(m.name)} ${m.flag ? FLAGS[m.flag] : ''}</div>
+          <div class="snippet">${escHTML(m.snippet)}</div>
         </div>
         <div class="thread-meta">
-          <div class="time">${m.time}</div>
+          <div class="time">${escHTML(m.time)}</div>
           ${m.unread ? `<div class="unread-dot">${m.unread}</div>` : ''}
         </div>
       </div>`).join('')}
@@ -750,11 +781,9 @@ function renderShelf(){
     s.addEventListener('click', ()=>{
       const item = DATA.story.find(x=>x.id===s.dataset.story);
       if(item.status==='locked') return;
-      openModal('memories');
+      if(window.LilaStory) LilaStory.onStoryStop(item.id); else openModal('memories');
     });
   });
-  document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click', ()=>openModal(b.dataset.open)));
-  document.getElementById('storySeeAll').addEventListener('click', ()=>openModal('memories'));
 }
 
 /* =========================================================================
@@ -790,8 +819,7 @@ function renderModalContent(type, param){
     case 'movies': return renderMovies();
     case 'achievements': return renderAchievements();
     case 'settings': return renderSettings();
-    case 'episode': return renderEpisode();
-    default: return '<p>Coming soon.</p>';
+    default: return (window.LilaStory && LilaStory.renderModal(type, param)) || '<p>Coming soon.</p>';
   }
 }
 
@@ -804,15 +832,25 @@ function renderPhone(threadId){
     <div class="modal-eyebrow">Phone</div>
     <div class="modal-title">📱 Messages</div>
     <div class="tabs">
-      ${DATA.messages.map(m=>`<button class="tab-btn ${m.id===active?'active':''}" data-thread-tab="${m.id}">${m.name}</button>`).join('')}
+      ${DATA.messages.map(m=>`<button class="tab-btn ${m.id===active?'active':''}" data-thread-tab="${m.id}">${escHTML(m.name)}</button>`).join('')}
     </div>
     <div id="threadBody">
-      ${chat.map(msg=>`<div class="chat-bubble ${msg.from==='me'?'me':''}">${msg.text}${msg.liked ? '<span class="bubble-like">❤️</span>' : ''}</div>`).join('')}
+      ${chat.map(msg=>`<div class="chat-bubble ${msg.from==='me'?'me':''}">${chatBody(msg)}${msg.time ? `<span class="bubble-time">${escHTML(msg.time)}</span>` : ''}${msg.liked ? '<span class="bubble-like">❤️</span>' : ''}</div>`).join('')}
     </div>
     <div class="chat-input-row">
-      <input type="text" class="chat-input" id="chatInput" placeholder="Message ${thread.name}..." maxlength="240">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Message ${escHTML(thread.name)}..." maxlength="240">
       <button class="chat-send-btn" id="chatSendBtn" title="Send">➤</button>
     </div>`;
+}
+
+function chatBody(msg){
+  if(msg.kind === 'voice'){
+    const mine = msg.from === 'me';
+    return `<span class="voice-note">${!mine && msg.text ? `<button data-speak="${escHTML(msg.text)}" aria-label="Play voice message">▶</button>` : '🎤'} Voice message ${msg.dur ? '· ' + escHTML(msg.dur) : ''}</span>`
+      + (!mine && msg.text && msg.revealed ? `<div class="voice-tr">“${escHTML(msg.text)}”</div>` : '')
+      + (mine ? '<div class="voice-tr">Recorded on your device</div>' : '');
+  }
+  return escHTML(msg.text);
 }
 
 const AUTO_REPLIES = {
@@ -898,7 +936,7 @@ function renderMap(){
     <div class="map-wrap" id="mapWrap">
       ${DATA.locations.map(l=>`
         <div class="map-pin ${l.status}" style="left:${l.x}%; top:${l.y}%;" data-loc="${l.id}">
-          <span>${l.status==='unlocked' ? '📍' : '🔒'}</span>
+          <span>${l.visited ? '✅' : l.status==='unlocked' ? '📍' : '🔒'}</span>
         </div>`).join('')}
       <div class="map-tooltip" id="mapTooltip"></div>
     </div>
@@ -909,8 +947,8 @@ function renderJournal(){
   const entries = DATA.journal.length
     ? DATA.journal.map(j=>`
         <div class="journal-entry">
-          <div class="journal-date">${j.date}</div>
-          <div class="journal-text">${j.text}</div>
+          <div class="journal-date">${escHTML(j.date)}${j.auto ? '<span class="journal-auto">auto · story</span>' : ''}</div>
+          <div class="journal-text">${escHTML(j.text)}</div>
         </div>`).join('')
     : `<p class="muted" style="font-size:13px;">Your journal is empty so far. Write your first entry above! ✏️</p>`;
   return `
@@ -933,7 +971,10 @@ function renderBackpack(tab){
           <div class="phrase-ua">${p.ua}</div>
           <div class="phrase-ex">${p.ex}</div>
         </div>`).join('');
-  const itemsHtml = `<div>${DATA.items.map(i=>`<span class="item-chip">🎫 ${i}</span>`).join('')}</div>`;
+  const itemsHtml = `<div>${DATA.items.map(i=>{
+    const info = (window.LilaStory && LilaStory.itemInfo(i)) || { icon:'🎫', desc:'' };
+    return `<div class="item-row"><span class="ico">${info.icon}</span><div><b>${escHTML(i)}</b><small>${escHTML(info.desc)}</small></div></div>`;
+  }).join('')}</div>`;
   return `
     <div class="modal-eyebrow">Your stuff</div>
     <div class="modal-title">🎒 Backpack</div>
@@ -952,11 +993,12 @@ function renderMemories(){
     <div class="modal-title">📸 Memories</div>
     <div class="memory-grid">
       ${DATA.memories.map((m,i)=>`
-        <div class="polaroid ${m.unlocked?'':'locked'}" style="--r:${(i%2?1:-1) * (2+Math.random()*2)}deg">
+        <div class="polaroid ${m.unlocked?'':'locked'}" data-mem="${m.id}" style="--r:${(i%2?1:-1) * (2+Math.random()*2)}deg" ${m.unlocked ? 'tabindex="0" role="button"' : ''}>
           <div class="photo" style="${m.unlocked && m.imgKey ? `background-image:url('${ASSETS[m.imgKey]}'); background-size:cover; background-position:center;` : ''}">${m.unlocked ? (m.imgKey ? '' : m.icon) : '?'}</div>
           <div class="cap">${m.unlocked ? m.cap : 'Locked'}</div>
         </div>`).join('')}
-    </div>`;
+    </div>
+    <div id="memoryDetail"></div>`;
 }
 
 function renderPeople(){
@@ -1041,22 +1083,12 @@ function renderSettings(){
     </div>`;
 }
 
-function renderEpisode(){
-  return `
-    <div class="episode-stage" id="episodeStage">
-      <div class="ep-badge">SEASON 1 · EPISODE 1</div>
-      <div class="ep-title">Arrival</div>
-      <div class="chat-bubble">Airport Officer: Welcome to Los Angeles! Passport, please. 🛂</div>
-      <button class="choice-btn" data-choice="yes">"Here you go!"</button>
-      <button class="choice-btn" data-choice="no">"Um... one second, let me find it."</button>
-    </div>`;
-}
-
 /* =========================================================================
    MODAL WIRING — small per-type interactivity
    ========================================================================= */
 function wireModalContent(type){
   if(type === 'phone'){
+    modalContent.querySelectorAll('[data-speak]').forEach(b=>b.addEventListener('click', ()=>speak(b.dataset.speak)));
     const activeId = (modalContent.querySelector('.tab-btn.active') && modalContent.querySelector('.tab-btn.active').dataset.threadTab) || DATA.messages[0].id;
     modalContent.querySelectorAll('[data-thread-tab]').forEach(t=>{
       t.addEventListener('click', ()=>{ modalContent.innerHTML = renderPhone(t.dataset.threadTab); wireModalContent('phone'); });
@@ -1073,7 +1105,7 @@ function wireModalContent(type){
       pin.addEventListener('click', ()=>{
         const loc = DATA.locations.find(l=>l.id===pin.dataset.loc);
         tooltip.style.left = pin.style.left; tooltip.style.top = pin.style.top;
-        tooltip.innerHTML = `<b>${loc.name}</b><br>${loc.note}`;
+        tooltip.innerHTML = `<b>${escHTML(loc.name)}</b><br>${escHTML(loc.note)}`;
         tooltip.style.display = 'block';
       });
     });
@@ -1126,32 +1158,18 @@ function wireModalContent(type){
     document.getElementById('toggleMotion').addEventListener('change', e=> document.body.classList.toggle('reduced-motion', e.target.checked));
     document.getElementById('toggleContrast').addEventListener('change', e=> document.body.classList.toggle('high-contrast', e.target.checked));
   }
-  if(type === 'episode'){
-    wireEpisodeChoices();
-  }
-}
-
-function wireEpisodeChoices(){
-  modalContent.querySelectorAll('[data-choice]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const stage = document.getElementById('episodeStage');
-      if(btn.dataset.choice === 'yes'){
-        stage.innerHTML = `
-          <div class="ep-badge">SEASON 1 · EPISODE 1</div>
-          <div class="chat-bubble" style="margin-left:auto; background:rgba(255,138,61,0.25);">You: Here you go!</div>
-          <div class="chat-bubble">Officer: Thank you. Enjoy your stay! 😊</div>
-          <div class="useful-chip">💬 Useful English: "Here you go" = a polite way to hand something to someone</div>
-          <div class="cliff">Outside, a driver is holding a sign with your name on it...<br>To be continued...</div>`;
-      } else {
-        stage.innerHTML = `
-          <div class="ep-badge">SEASON 1 · EPISODE 1</div>
-          <div class="chat-bubble" style="margin-left:auto; background:rgba(255,138,61,0.25);">You: Um... one second, let me find it.</div>
-          <div class="chat-bubble">Officer: Take your time. 🛂</div>
-          <div class="useful-chip">💬 Useful English: "Take your time" = reassuring someone who needs a moment</div>
-          <div class="cliff">Outside, a driver is holding a sign with your name on it...<br>To be continued...</div>`;
-      }
+  if(type === 'memories'){
+    modalContent.querySelectorAll('.polaroid[data-mem]').forEach(p=>{
+      const show = ()=>{
+        const m = DATA.memories.find(x=>x.id===p.dataset.mem);
+        if(!m || !m.unlocked) return;
+        document.getElementById('memoryDetail').innerHTML = `<div class="memory-detail"><b>${escHTML(m.cap)}</b><p>${escHTML(m.desc || 'A moment from your story.')}</p></div>`;
+      };
+      p.addEventListener('click', show);
+      p.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); show(); } });
     });
-  });
+  }
+  if(window.LilaStory && LilaStory.wireModal) LilaStory.wireModal(type);
 }
 
 function speak(text){
@@ -1275,46 +1293,106 @@ function makeDraggable(handle, target){
    ========================================================================= */
 let STUDENT = null;
 
+/* Progress lives in Supabase (table life_in_la_progress) AND in a copy in
+   this browser's localStorage. The local copy makes saving instant, survives
+   a dropped connection, and is the only store in ?preview=1 mode (which never
+   touches Supabase, so it can't read or write a real student's row).
+   Episode/world progress goes in the jsonb column `story` — see
+   supabase-migration-episode-01.sql. If that column doesn't exist yet, saving
+   still works: journal/chat go to the cloud, the story stays on the device. */
+let CLOUD_STORY_OK = true;
+window.LILA_SYNC = 'device';
+function localKey(){ return 'lifeInLA:progress:' + (STUDENT ? STUDENT.id : 'anon'); }
+
+function snapshotProgress(){
+  const chat = {};
+  DATA.messages.forEach(m=>{ chat[m.id] = m.chat || []; });
+  return {
+    day: DATA.day.number,
+    journal: DATA.journal,
+    chat,
+    story: window.LilaStory ? LilaStory.collect() : null
+  };
+}
+function applyProgress(p){
+  if(!p) return;
+  if(Array.isArray(p.journal)) DATA.journal = p.journal;
+  if(p.day) DATA.day.number = p.day;
+  if(window.LilaStory) LilaStory.apply(p.story || null, p.chat || {});
+  else {
+    const mia = DATA.messages.find(m=>m.id==='mia');
+    if(mia && p.chat && p.chat.mia) mia.chat = p.chat.mia;
+  }
+}
+function rerenderHome(){
+  renderTopbar(); renderMission(); renderMessages(); renderShelf();
+}
+
 async function loadProgress(){
   if(!STUDENT) return;
-  try{
-    const { data, error } = await SB
-      .from('life_in_la_progress')
-      .select('day, journal, chat')
-      .eq('user_id', STUDENT.id)
-      .maybeSingle();
-    if(error) throw error;
-    if(!data) return; // first visit for this student — nothing saved yet
-    if(data.journal) DATA.journal = data.journal;
-    const mia = DATA.messages.find(m=>m.id==='mia');
-    if(mia && data.chat && data.chat.mia) mia.chat = data.chat.mia;
-    if(data.day) DATA.day.number = data.day;
-    renderTopbar();
-    renderShelf();
-  } catch(err){
-    console.warn('Life in LA: could not load saved progress, starting fresh.', err);
+  let local = null, remote = null;
+  try { local = JSON.parse(localStorage.getItem(localKey()) || 'null'); } catch(e){}
+  if(STUDENT.preview){
+    window.LILA_SYNC = 'preview';
+  } else if(window.SB){
+    try{
+      const { data, error } = await SB.from('life_in_la_progress').select('*').eq('user_id', STUDENT.id).maybeSingle();
+      if(error) throw error;
+      if(data){
+        CLOUD_STORY_OK = Object.prototype.hasOwnProperty.call(data, 'story');
+        remote = { day:data.day, journal:data.journal, chat:data.chat, story:data.story || null, savedAt: Date.parse(data.updated_at) || 0 };
+      }
+      window.LILA_SYNC = CLOUD_STORY_OK ? 'cloud' : 'no-story-column';
+    } catch(err){
+      window.LILA_SYNC = 'offline';
+      console.warn('Life in LA: could not load saved progress from the server, using this device.', err);
+    }
   }
+  let chosen = remote || local;
+  if(remote && local && (local.savedAt || 0) > (remote.savedAt || 0) + 1500) chosen = local;  // this device is newer (e.g. saved offline)
+  if(chosen === remote && remote && !remote.story && local && local.story) remote.story = local.story;
+  applyProgress(chosen);
+  rerenderHome();
+  if(chosen && chosen === local && !STUDENT.preview) saveProgress({ delay: 800 });       // push newer local data up
 }
 
 let saveTimer = null;
-function saveProgress(){
+function saveProgress(opts){
   if(!STUDENT) return;
+  opts = opts || {};
+  const snap = snapshotProgress();
+  snap.savedAt = Date.now();
+  try { localStorage.setItem(localKey(), JSON.stringify(snap)); } catch(e){ console.warn('Life in LA: local save failed', e); }
+  if(STUDENT.preview || !window.SB) return;
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(async ()=>{
-    try{
-      const mia = DATA.messages.find(m=>m.id==='mia');
-      const { error } = await SB.from('life_in_la_progress').upsert({
-        user_id: STUDENT.id,
-        day: DATA.day.number,
-        journal: DATA.journal,
-        chat: { mia: (mia && mia.chat) || [] },
-        updated_at: new Date().toISOString()
-      });
-      if(error) throw error;
-    } catch(err){
-      console.warn('Life in LA: could not save progress.', err);
+  const run = ()=> pushToCloud(snap.savedAt);
+  if(opts.immediate) run(); else saveTimer = setTimeout(run, opts.delay != null ? opts.delay : 600);
+}
+async function pushToCloud(savedAt){
+  try{
+    const snap = snapshotProgress();
+    const row = {
+      user_id: STUDENT.id,
+      day: snap.day,
+      journal: snap.journal,
+      chat: snap.chat,
+      updated_at: new Date(savedAt || Date.now()).toISOString()
+    };
+    if(CLOUD_STORY_OK) row.story = snap.story;
+    let { error } = await SB.from('life_in_la_progress').upsert(row);
+    if(error && CLOUD_STORY_OK && /story/i.test(error.message || '')){
+      // The `story` column hasn't been added yet: keep story progress on this device, still sync the rest.
+      CLOUD_STORY_OK = false;
+      delete row.story;
+      console.warn('Life in LA: run supabase-migration-episode-01.sql to sync episode progress to the account.');
+      ({ error } = await SB.from('life_in_la_progress').upsert(row));
     }
-  }, 600); // debounced so rapid actions (typing, several sends) don't spam Supabase
+    if(error) throw error;
+    window.LILA_SYNC = CLOUD_STORY_OK ? 'cloud' : 'no-story-column';
+  } catch(err){
+    window.LILA_SYNC = 'offline';
+    console.warn('Life in LA: could not save progress to the server (kept on this device).', err);
+  }
 }
 
 function init(){
@@ -1329,6 +1407,10 @@ function init(){
   renderShelf();
 
   document.getElementById('profileBtn').addEventListener('click', ()=>openModal('settings'));
+  // wired once here (renderShelf runs again after progress loads)
+  document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click', ()=>openModal(b.dataset.open)));
+  document.getElementById('storySeeAll').addEventListener('click', ()=>openModal('memories'));
+  window.addEventListener('pagehide', ()=>saveProgress({ immediate:true }));
 
   makeDraggable(document.getElementById('missionNote'), document.getElementById('missionWrap'));
   makeDraggable(document.getElementById('phoneHandle'), document.getElementById('phoneWrap'));
@@ -1337,10 +1419,12 @@ function init(){
 // Called by the auth-gate script in <head> once it confirms a logged-in
 // Supabase session. This is now the only way the app starts.
 function startCourse(user){
-  STUDENT = { id: user.id, name: user.email };
+  STUDENT = { id: user.id, name: user.email, preview: !!user.preview };
   init();
   loadProgress();
 }
 </script>
+<!-- Season 1 · Episode 1 "Arrival" — story engine, scenes, mini-games -->
+<script src="episodes/episode-01/episode-01.js"></script>
 </body>
 </html>
