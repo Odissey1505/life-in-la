@@ -107,7 +107,7 @@ const SPEAKERS = {
   pilot:       { name:'Pilot', role:'On-board announcement', color:'#5AB6F9', icon:'📢', voice:{ g:'m', pitch:0.85, rate:0.92, idx:0 } },
   airport:     { name:'LAX announcement', role:'Terminal speakers', color:'#5AB6F9', icon:'📢', voice:{ g:'f', pitch:1.0, rate:0.92, idx:1 } },
   you:         { name:'You', color:'#FF8A3D', icon:'🙂', voice:{ g:'any', pitch:1.05, rate:0.95, idx:2 } },
-  officer:     { name:'Officer', role:'Passport control', color:'#3E7C8C', voice:{ g:'m', pitch:0.9, rate:0.9, idx:1 } },
+  officer:     { name:'Officer', role:'Passport control', color:'#3E7C8C', voice:{ g:'f', pitch:0.95, rate:0.9, idx:3 } },
   staff:       { name:'Baggage agent', role:'Baggage Service', color:'#6DBB75', voice:{ g:'f', pitch:1.1, rate:0.95, idx:0 } },
   guide:       { name:'Airport employee', role:'Terminal staff', color:'#9B8ECF', voice:{ g:'m', pitch:1.0, rate:0.95, idx:2 } },
   chris:       { name:'Chris', role:'Program driver', color:'#FFB199', dark:true, voice:{ g:'m', pitch:0.95, rate:0.98, idx:0 } },
@@ -117,29 +117,29 @@ const SPEAKERS = {
 
 /* Suitcases for the two baggage mini-games. */
 const DECOYS = [
-  { size:'L', color:'black', feature:null,      label:'Large black suitcase',
+  { size:'L', color:'black', feature:null,      img:'suitcase-c4-1', label:'Large black suitcase',
     why:"It's black — but it's large, and there's no ribbon." },
-  { size:'M', color:'blue',  feature:null,      label:'Medium blue suitcase',
+  { size:'M', color:'blue',  feature:null,      img:'suitcase-c4-2', label:'Medium blue suitcase',
     why:"Right size… but it's blue." },
-  { size:'M', color:'red',   feature:'tag',     fcolor:'#ffd23f', label:'Red suitcase with a yellow tag',
+  { size:'M', color:'red',   feature:'tag',     fcolor:'#ffd23f', img:'suitcase-c4-3', label:'Red suitcase with a yellow tag',
     why:"Red, with a yellow tag. Not yours." },
-  { size:'S', color:'black', feature:'sticker', fcolor:'#FF8A3D', label:'Small black suitcase with an orange sticker',
+  { size:'S', color:'black', feature:'sticker', fcolor:'#FF8A3D', img:'suitcase-c4-4', label:'Small black suitcase with an orange sticker',
     why:"Black and orange… but it's small, and that's a sticker, not a ribbon." },
-  { size:'M', color:'grey',  feature:'ribbon',  fcolor:'#FF8A3D', label:'Grey suitcase with an orange ribbon',
+  { size:'M', color:'grey',  feature:'ribbon',  fcolor:'#FF8A3D', img:'suitcase-c4-5', label:'Grey suitcase with an orange ribbon',
     why:"An orange ribbon! But the suitcase is grey." }
 ];
 const CAROUSEL6 = [
-  { size:'M', color:'black', feature:'tag',    fcolor:'#FF8A3D', label:'Medium black suitcase with an orange tag',
+  { size:'M', color:'black', feature:'tag',    fcolor:'#FF8A3D', img:'suitcase-c6-1', label:'Medium black suitcase with an orange tag',
     why:"Black, medium… but that's an orange tag, not a ribbon." },
-  { size:'L', color:'black', feature:'ribbon', fcolor:'#FF8A3D', label:'Large black suitcase with an orange ribbon',
+  { size:'L', color:'black', feature:'ribbon', fcolor:'#FF8A3D', img:'suitcase-c6-2', label:'Large black suitcase with an orange ribbon',
     why:"Black, orange ribbon… but it's large. Yours is medium-sized." },
-  { size:'M', color:'black', feature:'ribbon', fcolor:'#FF8A3D', label:'Medium black suitcase with an orange ribbon', mine:true },
-  { size:'M', color:'grey',  feature:'ribbon', fcolor:'#FF8A3D', label:'Medium grey suitcase with an orange ribbon',
+  { size:'M', color:'black', feature:'ribbon', fcolor:'#FF8A3D', img:'suitcase-mine', label:'Medium black suitcase with an orange ribbon', mine:true },
+  { size:'M', color:'grey',  feature:'ribbon', fcolor:'#FF8A3D', img:'suitcase-c6-4', label:'Medium grey suitcase with an orange ribbon',
     why:"Medium, orange ribbon… but it's grey." },
-  { size:'M', color:'black', feature:null,     label:'Medium black suitcase',
+  { size:'M', color:'black', feature:null,     img:'suitcase-c6-5', label:'Medium black suitcase',
     why:"Black and medium — but no ribbon on the handle." }
 ];
-const MY_SUITCASE = { size:'M', color:'black', feature:'ribbon', fcolor:'#FF8A3D' };
+const MY_SUITCASE = { size:'M', color:'black', feature:'ribbon', fcolor:'#FF8A3D', img:'suitcase-mine' };
 
 /* =========================================================================
    STORY — 8 scenes. Node types are rendered by the engine (part B/C).
@@ -155,9 +155,9 @@ const SCENES = [
 { id:'s1', n:1, title:'Welcome to Los Angeles', emoji:'✈️', objective:'Land in Los Angeles',
   bg:'cabin', ambience:'cabin', clock:'5:40 PM',
   hotspots:[
-    { id:'s1-window', x:30, y:42, icon:'🪟', label:'Look out of the window', bgs:['window'],
+    { id:'s1-window', x:30, y:42, ph:[34, 30], icon:'🪟', label:'Look out of the window', bgs:['window'],
       text:"Palm trees… from up here they look like tiny green stars.", ua:"Пальми… звідси вони схожі на крихітні зелені зірочки." },
-    { id:'s1-pass', x:74, y:62, icon:'🎫', label:'Check your boarding pass', item:'LAX boarding pass', bgs:['cabin'] }
+    { id:'s1-pass', x:74, y:62, ph:[71, 63], icon:'🎫', label:'Check your boarding pass', item:'LAX boarding pass', bgs:['cabin'] }
   ],
   nodes:{
     open:  { type:'cards', cards:['LOS ANGELES, CALIFORNIA','5:40 PM','DAY 1'],
@@ -244,7 +244,7 @@ const SCENES = [
 { id:'s3', n:3, title:'Passport Control', emoji:'🛂', objective:'Pass passport control',
   bg:'passport', ambience:'hall', clock:'6:05 PM',
   hotspots:[
-    { id:'s3-sign', x:90, y:22, icon:'🪧', label:'Read the booth sign',
+    { id:'s3-sign', x:90, y:22, ph:[73.5, 40], icon:'🪧', label:'Read the booth sign',
       text:"“Please have your passport ready.” Ready-ish.", ua:"«Будь ласка, підготуйте паспорт». Ну… майже готово." }
   ],
   nodes:{
@@ -307,7 +307,7 @@ const SCENES = [
 { id:'s4', n:4, title:'The Missing Suitcase', emoji:'🧳', objective:'Find your suitcase',
   bg:'baggage', ambience:'carousel', clock:'6:24 PM',
   hotspots:[
-    { id:'s4-sign', x:66, y:20, icon:'🪧', label:'Read the carousel sign',
+    { id:'s4-sign', x:66, y:20, ph:[80, 29], icon:'🪧', label:'Read the carousel sign',
       text:"“Baggage Claim 4 · Flight EU 207 from Warsaw.” That's my flight.", ua:"«Видача багажу 4 · Рейс EU 207 з Варшави». Це мій рейс." }
   ],
   nodes:{
@@ -346,7 +346,7 @@ const SCENES = [
 { id:'s5', n:5, title:'Can You Help Me?', emoji:'🙋', objective:'Get help at Baggage Service',
   bg:'desk', ambience:'hall', clock:'6:38 PM',
   hotspots:[
-    { id:'s5-sign', x:72, y:14, icon:'🪧', label:'Read the desk sign',
+    { id:'s5-sign', x:72, y:14, ph:[76, 21], icon:'🪧', label:'Read the desk sign',
       text:"“Baggage Service — lost & delayed bags.” Exactly what I need.", ua:"«Багажна служба — загублений і затриманий багаж». Саме те, що треба." }
   ],
   nodes:{
@@ -403,7 +403,7 @@ const SCENES = [
 { id:'s6', n:6, title:'Where Is My Ride?', emoji:'🚘', objective:'Find Door 5',
   bg:'pickup', ambience:'outside', clock:'7:02 PM',
   hotspots:[
-    { id:'s6-sign', x:68, y:24, icon:'🪧', label:'Read the big sign',
+    { id:'s6-sign', x:68, y:24, ph:{ pickup:[81, 30], van:[73, 27] }, icon:'🪧', label:'Read the big sign',
       text:"“Ground Transportation · Doors 3–6.” Door 5 must be close.", ua:"«Наземний транспорт · виходи 3–6». Вихід 5 десь поруч." }
   ],
   nodes:{
@@ -456,7 +456,7 @@ const SCENES = [
 { id:'s7', n:7, title:'A Change of Plans', emoji:'🌆', objective:'Ride with Chris',
   bg:'drive', ambience:'car', clock:'7:18 PM',
   hotspots:[
-    { id:'s7-window', x:58, y:40, icon:'🌴', label:'Look out of the window',
+    { id:'s7-window', x:58, y:40, ph:[60, 26], icon:'🌴', label:'Look out of the window',
       text:"Palm trees, a giant billboard, a taco truck with a line around the block… This is LA.", ua:"Пальми, величезний білборд, фуд-трак із тако й чергою на весь квартал… Це Лос-Анджелес." }
   ],
   nodes:{
@@ -511,9 +511,9 @@ const SCENES = [
 { id:'s8', n:8, title:'My First LA Story', emoji:'🎙️', objective:'Tell Mia your story',
   bg:'hotel', ambience:'hotel', clock:'8:46 PM',
   hotspots:[
-    { id:'s8-window', x:62, y:36, icon:'🌃', label:'Look at the city',
+    { id:'s8-window', x:62, y:36, ph:[76, 30], icon:'🌃', label:'Look at the city',
       text:"Somewhere out there is my new home.", ua:"Десь там — мій новий дім." },
-    { id:'s8-case', x:80, y:76, icon:'🧳', label:'Check your suitcase',
+    { id:'s8-case', x:80, y:76, ph:[31, 66], icon:'🧳', label:'Check your suitcase',
       text:"Still here. Still mine. 😅", ua:"Досі тут. Досі моя. 😅" }
   ],
   nodes:{
@@ -543,10 +543,16 @@ SCENES.forEach((s, i) => { s.index = i; s.order = Object.keys(s.nodes); SCENE_BY
 /* =========================================================================
    SCENE ART
    -------------------------------------------------------------------------
-   Each background first tries a real photo from episodes/episode-01/photos/. If the
-   photo isn't there (not generated yet / failed to load), a hand-built
-   cinematic SVG illustration is shown instead, so the episode always works.
-   Prompts for every photo are in episodes/episode-01/photos/README.md.
+   Each background is a real photo from episodes/episode-01/photos/, built
+   from layers so the old animations still play on top of it:
+     · the plane window — the city zooms in behind a cut-out window frame
+     · people (officer, baggage agent, Chris) — cut out and gently breathing
+     · the drive — the street sways behind the car-window frame, light
+       streaks race along the road, street lamps sweep past, and the sunset
+       photo fades into the night photo at "nightfall"
+     · the hotel — the bedside lamp glows, city lights twinkle
+   If a photo is missing or fails to load, the hand-drawn SVG version below
+   is shown instead, so the episode always works.
    ========================================================================= */
 const PHOTO_BASE = 'episodes/episode-01/photos/';
 const PHOTOS = {
@@ -554,7 +560,13 @@ const PHOTOS = {
   baggage:'s4-baggage-claim.webp', desk:'s5-baggage-service.webp', carousel6:'s5-carousel-6.webp',
   pickup:'s6-pickup-zone.webp', van:'s6-chris-van.webp', drive:'s7-drive.webp', hotel:'s8-hotel-room.webp'
 };
+/* extra layers per scene (preloaded together with the main photo) */
+const PHOTO_EXTRAS = {
+  window:['s1-window-frame'], passport:['s3-officer'], desk:['s5-agent'], van:['s6-chris'],
+  drive:['s7-drive-night', 's7-drive-frame', 's7-drive-night-frame']
+};
 const photoState = {};   // key -> 'ok' | 'missing' | Promise
+const preloaded = [];
 function probePhoto(key){
   if(photoState[key] === 'ok' || photoState[key] === 'missing') return Promise.resolve(photoState[key]);
   if(photoState[key]) return photoState[key];
@@ -562,13 +574,39 @@ function probePhoto(key){
   if(!file){ photoState[key] = 'missing'; return Promise.resolve('missing'); }
   photoState[key] = new Promise(res => {
     const img = new Image();
-    const done = v => { photoState[key] = v; res(v); };
+    const done = v => { if(typeof photoState[key] === 'string') return; photoState[key] = v; res(v); };
     img.onload = () => done('ok');
     img.onerror = () => done('missing');
-    setTimeout(() => { if(typeof photoState[key] !== 'string') done('missing'); }, 4000);
+    setTimeout(() => done('missing'), 12000);
     img.src = PHOTO_BASE + file;
+    (PHOTO_EXTRAS[key] || []).forEach(n => { const x = new Image(); x.src = PHOTO_BASE + n + '.webp'; preloaded.push(x); });
   });
   return photoState[key];
+}
+
+/* ---- photo layers ---- */
+const PH_IMG = (n, cls = '', style = '') =>
+  `<img class="ep1-pic${cls ? ' ' + cls : ''}"${style ? ` style="${style}"` : ''} src="${PHOTO_BASE + n}.webp" alt="" draggable="false" decoding="async" onerror="this.remove()">`;
+/* origin = bottom-centre of the person in the photo, in % (from tools/build_photos.py) */
+const PH_FIG = (n, ox, oy, delay = 0) => PH_IMG(n, 'ep1-pic-fig', `transform-origin:${ox}% ${oy}%;animation-delay:${delay}s`);
+const HOTEL_TWINKLES = [[60.8,55.9],[80.4,56.4],[44.4,55.7],[53.0,55.5],[52.1,47.0],[60.8,46.7],[52.9,59.2],[59.0,59.2],[75.5,36.0],[43.8,38.7],[68.2,52.6],[86.9,49.8]];
+const PHOTO_LAYERS = {
+  window: () => `<div class="ep1-pic-zoom">${PH_IMG('s1-window')}</div>${PH_IMG('s1-window-frame')}`,
+  passport: () => PH_IMG('s3-passport-control') + PH_FIG('s3-officer', 50.15, 56.32),
+  desk: () => PH_IMG('s5-baggage-service') + PH_FIG('s5-agent', 49.22, 66.31, -1.7),
+  van: () => PH_IMG('s6-chris-van') + PH_FIG('s6-chris', 50.54, 100, -0.8),
+  drive: () => `<div class="ep1-pic-street"><div class="ep1-pic-pan">${PH_IMG('s7-drive')}${PH_IMG('s7-drive-night', 'ep1-pic-night')}</div>
+      <div class="ep1-pic-streaks" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
+    ${PH_IMG('s7-drive-frame')}${PH_IMG('s7-drive-night-frame', 'ep1-pic-night')}<div class="ep1-pic-sweep"></div>`,
+  hotel: () => PH_IMG('s8-hotel-room') + `<div class="ep1-pic-lamp"></div>` +
+    HOTEL_TWINKLES.map((p, i) => `<i class="ep1-pic-tw" style="left:${p[0]}%;top:${p[1]}%;--d:${(2.6 + (i * 0.37) % 1.8).toFixed(2)}s;--o:${(-(i * 0.71) % 3).toFixed(2)}s"></i>`).join('')
+};
+function photoLayers(key){
+  const build = PHOTO_LAYERS[key];
+  const main = PHOTOS[key].replace(/\.webp$/, '');
+  /* a soft, blurred copy behind the photo fills any edge the framing leaves open */
+  return `<div class="ep1-pic-backdrop" style="background-image:url('${PHOTO_BASE + PHOTOS[key]}')"></div>` +
+    `<div class="ep1-pic-box" data-ph="${key}">${build ? build() : PH_IMG(main)}</div>`;
 }
 
 let artSeq = 0;
@@ -860,9 +898,29 @@ function sceneArt(key){
   return (ART[key] || ART.cabin)(u);
 }
 
+/* Suitcases: photos (photos/suitcase-*.webp, trimmed, transparent) scaled by
+   size so S / M / L read clearly; the drawn SVG below is the fallback. */
+const SC_PHOTO = {};   // img name -> 'wait' | 'ok' | 'missing'
+function probeSuitcases(){
+  [MY_SUITCASE, ...DECOYS, ...CAROUSEL6, { img:'s6-map' }].forEach(c => {
+    if(!c.img || SC_PHOTO[c.img]) return;
+    SC_PHOTO[c.img] = 'wait';
+    const im = new Image();
+    im.onload = () => { SC_PHOTO[c.img] = 'ok'; };
+    im.onerror = () => { SC_PHOTO[c.img] = 'missing'; };
+    im.src = PHOTO_BASE + c.img + '.webp';
+    preloaded.push(im);
+  });
+}
+const SC_HEIGHT = { S:56, M:70, L:85 };   // % of the 140×230 suitcase box (same box as the SVG)
+function suitcasePhoto(c){
+  return `<span class="ep1-sc-svg ep1-sc-photo" aria-hidden="true"><img src="${PHOTO_BASE + c.img}.webp" alt="" draggable="false" style="height:${SC_HEIGHT[c.size] || 70}%"></span>`;
+}
+
 /* Suitcases, drawn so the mini-games can show exact sizes/colours/details. */
 const SC_COL = { black:['#363940','#17181c'], blue:['#4a86d4','#244f8c'], red:['#d24c44','#8f2621'], grey:['#a9aeb5','#6c727a'] };
 function suitcaseSVG(c){
+  if(c.img && SC_PHOTO[c.img] === 'ok') return suitcasePhoto(c);
   const u = 'ep1s' + (++artSeq);
   const s = { S:0.72, M:0.9, L:1.1 }[c.size] || 0.9;
   const w = 104 * s, h = 132 * s, x = 70 - w / 2, y = 186 - h - 10;
@@ -878,7 +936,7 @@ function suitcaseSVG(c){
   } else if(c.feature === 'sticker'){
     feat = `<circle cx="${x + w * 0.68}" cy="${y + h * 0.42}" r="${13 * s}" fill="${c.fcolor}"/><circle cx="${x + w * 0.68}" cy="${y + h * 0.42}" r="${6 * s}" fill="#fff" opacity=".5"/>`;
   }
-  return `<svg viewBox="0 0 140 200" class="ep1-sc-svg" aria-hidden="true" focusable="false"><defs>${lin(`${u}b`, [[0,c1],[1,c2]], false)}</defs>
+  return `<svg viewBox="0 -30 140 230" class="ep1-sc-svg" aria-hidden="true" focusable="false"><defs>${lin(`${u}b`, [[0,c1],[1,c2]], false)}</defs>
     <rect x="${70 - 24*s}" y="${gy}" width="${6*s}" height="${36*s}" fill="#9aa0a8"/><rect x="${70 + 18*s}" y="${gy}" width="${6*s}" height="${36*s}" fill="#9aa0a8"/>
     <rect x="${70 - 28*s}" y="${gy - 8}" width="${56*s}" height="${12}" rx="6" fill="#4a4f57"/>
     <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${14*s}" fill="url(#${u}b)"/>${ridges}
@@ -1253,6 +1311,7 @@ function build(){
   /* keep mini-games clear of the dialogue panel, whatever its height */
   const setDlgH = () => root.style.setProperty('--dlgH', (EP.dlg.hidden ? 0 : EP.dlg.offsetHeight) + 'px');
   if(window.ResizeObserver) new ResizeObserver(setDlgH).observe(EP.dlg);
+  let hsTimer = 0; window.addEventListener('resize', () => { clearTimeout(hsTimer); hsTimer = setTimeout(() => { if(EP.open) renderHotspots(); }, 150); });
   new MutationObserver(setDlgH).observe(EP.dlg, { attributes:true, attributeFilter:['hidden'] });
   window.addEventListener('popstate', () => { if(EP.open){ EP.pushedHistory = false; close({ fromPop:true }); } });
   window.addEventListener('pagehide', () => { if(EP.open) flushSave(); });
@@ -1395,10 +1454,18 @@ function setBg(key){
     const old = $$('.ep1-bglayer', EP.bg).filter(l => l !== layer);
     setTimeout(() => old.forEach(l => l.remove()), 1100);
   };
-  const photoHTML = () => `<img class="ep1-photo" src="${PHOTO_BASE + PHOTOS[key]}" alt="" draggable="false">`;
-  if(photoState[key] === 'ok'){ show(photoHTML()); EP.stage.classList.add('has-photo'); return; }
-  show(sceneArt(key)); EP.stage.classList.remove('has-photo');
-  probePhoto(key).then(r => { if(r === 'ok' && EP.bgKey === key){ show(photoHTML()); EP.stage.classList.add('has-photo'); } });
+  const showPhoto = () => { show(photoLayers(key)); EP.stage.classList.add('has-photo'); requestAnimationFrame(renderHotspots); };
+  if(photoState[key] === 'ok'){ showPhoto(); return; }
+  if(photoState[key] === 'missing'){ show(sceneArt(key)); EP.stage.classList.remove('has-photo'); return; }
+  /* still loading: wait a moment for the photo before falling back to the drawing */
+  let shown = false;
+  const fallback = setTimeout(() => { if(EP.bgKey === key && !shown){ shown = 'art'; show(sceneArt(key)); EP.stage.classList.remove('has-photo'); } }, 700);
+  probePhoto(key).then(r => {
+    clearTimeout(fallback);
+    if(EP.bgKey !== key) return;
+    if(r === 'ok'){ shown = true; showPhoto(); }
+    else if(!shown){ shown = 'art'; show(sceneArt(key)); EP.stage.classList.remove('has-photo'); }
+  });
 }
 function setCam(cam){ EP.bg.classList.remove('cam-wide','cam-push','cam-drift','cam-shake'); void EP.bg.offsetWidth; if(cam) EP.bg.classList.add('cam-' + cam); }
 function bgAt(scene, nodeId){
@@ -1407,11 +1474,25 @@ function bgAt(scene, nodeId){
   const n = scene.nodes[nodeId]; if(n && n.bg) bg = n.bg;
   return { bg, cam, night };
 }
+/* Hotspots sit at x/y % of the stage. With a photo on screen, `ph` gives the
+   spot in photo coordinates instead (per background key when it differs), so
+   it stays on the right object whatever the screen shape. */
+function hotPos(h){
+  const ph = h.ph && (Array.isArray(h.ph) ? h.ph : h.ph[EP.bgKey]);
+  const layers = ph && EP.stage.classList.contains('has-photo') ? $$('.ep1-bglayer', EP.bg) : [];
+  const box = layers.length && layers[layers.length - 1].querySelector('.ep1-pic-box');
+  if(!box) return [h.x, h.y];
+  const b = box.getBoundingClientRect(), r = EP.hot.getBoundingClientRect();
+  if(!b.width || !r.width) return [h.x, h.y];
+  const x = (b.left + b.width * ph[0] / 100 - r.left) / r.width * 100;
+  const y = (b.top + b.height * ph[1] / 100 - r.top) / r.height * 100;
+  return [Math.min(95, Math.max(5, x)).toFixed(1), Math.min(86, Math.max(11, y)).toFixed(1)];
+}
 function renderHotspots(){
   const sc = EP.scene; if(!sc){ EP.hot.innerHTML = ''; return; }
-  EP.hot.innerHTML = (sc.hotspots || []).filter(h => !h.bgs || h.bgs.includes(EP.bgKey)).map(h =>
-    `<button type="button" class="ep1-hs ${st().explored.includes(h.id) ? 'seen' : ''}" style="left:${h.x}%;top:${h.y}%" data-hot="${h.id}" aria-label="${esc(h.label)}">
-      <span class="ep1-hs-dot" aria-hidden="true">${h.icon}</span><span class="ep1-hs-label">${esc(h.label)}</span></button>`).join('');
+  EP.hot.innerHTML = (sc.hotspots || []).filter(h => !h.bgs || h.bgs.includes(EP.bgKey)).map(h => { const [hx, hy] = hotPos(h); return `
+    <button type="button" class="ep1-hs ${st().explored.includes(h.id) ? 'seen' : ''}" style="left:${hx}%;top:${hy}%" data-hot="${h.id}" aria-label="${esc(h.label)}">
+      <span class="ep1-hs-dot" aria-hidden="true">${h.icon}</span><span class="ep1-hs-label">${esc(h.label)}</span></button>`; }).join('');
 }
 function openHotspot(hid){
   const h = (EP.scene.hotspots || []).find(x => x.id === hid); if(!h) return;
@@ -2191,7 +2272,7 @@ RENDER.navmap = function(node, id, tok){
          go:{ straight:{ to:'D5', ok:true, end:true }, left:{ to:'D4', msg:"Door 4 — rideshare pickup. Door 5 is just a little further." },
               right:{ to:'ESC', msg:"An escalator up to Departures. Not this time." } } }
   };
-  let at = 'A', path = ['A'], detours = 0, msg = '', done = false;
+  let at = 'A', path = ['A'], detours = 0, msg = '', done = false, busy = false;
   const f = st().flags;
   const g = showGame('g-map');
   const LABEL = { A:'Baggage Claim', B:'', C:'', D5:'Door 5 ☕', INFO:'Info Desk', WC:'Restrooms', D3:'Door 3', GATES:'Departures', D4:'Door 4', ESC:'Escalator' };
@@ -2207,23 +2288,53 @@ RENDER.navmap = function(node, id, tok){
       <text x="584" y="366" text-anchor="end" font-size="12" fill="#8aa1ba" ${FONT}>Simplified game map — not the real LAX layout</text>
     </svg>`;
   }
+  /* Photo map (photos/s6-map.webp): the same graph, drawn as a lit-up terminal.
+     PP = the node centres in the picture's own pixels. The token glides from
+     the last spot to the new one; the walked route is a dotted orange line. */
+  const PP = { A:[432,768], B:[432,395], C:[1094,395], D5:[1503,395], INFO:[115,768], WC:[762,768], D3:[432,127], GATES:[140,395], D4:[1094,158], ESC:[1094,628] };
+  let shownAt = 'A';
+  function mapPhoto(tokenAt){
+    const [fx, fy] = PP[shownAt];
+    const line = (a, b) => `<line x1="${PP[a][0]}" y1="${PP[a][1]}" x2="${PP[b][0]}" y2="${PP[b][1]}"/>`;
+    return `<svg viewBox="0 0 1618 972" class="ep1-map-svg ep1-map-photo" role="img" aria-label="Simplified map: you are at ${LABEL[tokenAt] || 'a corridor'}">
+      <defs><clipPath id="ep1MapClip"><rect width="1618" height="972" rx="44"/></clipPath></defs>
+      <g clip-path="url(#ep1MapClip)">
+        <rect width="1618" height="972" fill="#0f1a2e"/>
+        <image href="${PHOTO_BASE}s6-map.webp" width="1618" height="972" preserveAspectRatio="xMidYMid slice"/>
+        <g class="ep1-map-path" stroke="#FF8A3D" stroke-width="15" stroke-linecap="round" stroke-dasharray="3 28" fill="none">${path.slice(1).map((p, i) => line(path[i], p)).join('')}</g>
+        <g class="ep1-map-you" style="transform:translate(${fx}px,${fy}px)" data-x="${PP[tokenAt][0]}" data-y="${PP[tokenAt][1]}">
+          <circle class="ep1-map-pulse" r="34" fill="#FF8A3D"/>
+          <circle r="27" fill="#FF8A3D" stroke="#fff" stroke-width="9"/>
+          <text y="-46" text-anchor="middle" font-size="30" font-weight="800" fill="#fff" stroke="#0f1a2e" stroke-width="7" paint-order="stroke" ${FONT}>YOU</text>
+        </g>
+      </g>
+    </svg>`;
+  }
+  function moveToken(tokenAt){
+    const you = g.querySelector('.ep1-map-photo .ep1-map-you'); if(!you) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => { you.style.transform = `translate(${you.dataset.x}px,${you.dataset.y}px)`; }));
+    shownAt = tokenAt;
+  }
+  const usePhotoMap = () => SC_PHOTO['s6-map'] === 'ok';
   function draw(){
     const j = J[at];
+    const here = path[path.length - 1];
     g.innerHTML = `<div class="ep1-map">
-      ${mapSVG(path[path.length - 1])}
+      ${usePhotoMap() ? mapPhoto(here) : mapSVG(here)}
       <div class="ep1-map-side">
         ${f.gotDirections ? `<div class="ep1-note">📝 <b>Directions:</b> go straight → turn right → follow the signs. Door 5 is next to the coffee stand.</div>` : ''}
         ${!done ? `<div class="ep1-signs" aria-label="Signs you can see">${j.signs.map(([a, t]) => `<div class="ep1-sign"><span class="ep1-sign-a" aria-hidden="true">${a}</span>${esc(t)}</div>`).join('')}</div>` : ''}
         ${msg ? `<div class="ep1-tip">${esc(msg)}</div>` : ''}
-        ${!done ? `<div class="ep1-dirs">${[['left','⬅ Turn left'],['straight','⬆ Go straight'],['right','Turn right ➡']].map(([k, t]) => `<button type="button" class="ep1-dir" data-dir="${k}">${t}</button>`).join('')}</div>` : `<div class="ep1-good">✓ Door 5 — next to the coffee stand!</div>`}
+        ${!done ? `<div class="ep1-dirs">${[['left','⬅ Turn left'],['straight','⬆ Go straight'],['right','Turn right ➡']].map(([k, t]) => `<button type="button" class="ep1-dir" data-dir="${k}"${busy ? ' disabled' : ''}>${t}</button>`).join('')}</div>` : `<div class="ep1-good">✓ Door 5 — next to the coffee stand!</div>`}
         <div class="ep1-phr">${['go-straight','follow-signs','around-corner'].map(v => `<button type="button" class="ep1-chip" data-vocab="${v}">💬 ${esc(PHRASES[v].en)}</button>`).join('')}
           <span class="ep1-mini">next to = поруч із · near = біля</span></div>
       </div></div>`;
     const firstDir = g.querySelector('[data-dir]'); firstDir && firstDir.focus({ preventScroll:true });
+    moveToken(here);
   }
   g.onclick = e => {
     const v = e.target.closest('[data-vocab]'); if(v){ vocabCard(v.dataset.vocab); return; }
-    const b = e.target.closest('[data-dir]'); if(!b || done) return;
+    const b = e.target.closest('[data-dir]'); if(!b || done || busy) return;
     const step = J[at].go[b.dataset.dir];
     Voice.speak('you', b.textContent.replace(/[⬅⬆➡]/g, '').trim());
     if(step.ok){
@@ -2231,8 +2342,8 @@ RENDER.navmap = function(node, id, tok){
       if(step.end){ done = true; Sound.sfx('good'); taskDone(node.key); st().answers[node.key] = { detours }; save(true); draw(); finishMap(); return; }
       Sound.sfx('soft'); draw(); return;
     }
-    detours++; path.push(step.to); msg = step.msg + ' → Go back and try another way.'; draw();
-    setTimeout(() => { path.pop(); draw(); }, isReduced() ? 50 : 700);
+    detours++; path.push(step.to); msg = step.msg + ' → Go back and try another way.'; busy = true; draw();
+    setTimeout(() => { path.pop(); busy = false; draw(); }, isReduced() ? 50 : (usePhotoMap() ? 1800 : 700));
   };
   function finishMap(){
     dlg(`${head(null, 'think')}<div class="ep1-text think">${lineHTML("Door 5 — right next to the coffee stand. Made it!")}</div>
@@ -2572,7 +2683,7 @@ function openBackpack(tab = 'phrases'){
 /* =========================================================================
    OPEN / CLOSE / RESUME
    ========================================================================= */
-function prefetch(){ Object.keys(PHOTOS).forEach(k => probePhoto(k)); }
+function prefetch(){ Object.keys(PHOTOS).forEach(k => probePhoto(k)); probeSuitcases(); }
 function open(opts = {}){
   build();
   if(EP.open) return;

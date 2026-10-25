@@ -39,7 +39,58 @@ body.ep1-open{ overflow:hidden !important; }
 .ep1-grade{ position:absolute; inset:0; pointer-events:none;
   background:linear-gradient(to bottom, rgba(5,7,12,.72) 0, rgba(5,7,12,0) 18%, rgba(5,7,12,0) 52%, rgba(5,7,12,.78) 100%); }
 
-/* drive: parallax + nightfall */
+/* ---------- photo backgrounds (layers keep the animations alive) ----------
+   .ep1-pic-box always has the photos' own 16:9 shape and covers the stage like
+   object-fit:cover, so cut-outs and effects line up with the photo exactly. */
+.ep1-bglayer{ container-type:size; }
+.ep1-pic-box{ position:absolute; left:50%; top:50%; width:max(100cqw, calc(100cqh * 1672 / 941)); height:max(100cqh, calc(100cqw * 941 / 1672)); transform:translate(-50%,-50%); overflow:hidden; }
+@supports not (width:1cqw){ .ep1-pic-box{ left:0; top:0; width:100%; height:100%; transform:none; } }
+.ep1-pic-backdrop{ position:absolute; inset:-6%; background:#07080b center/cover no-repeat; filter:blur(22px) brightness(.45) saturate(1.1); }
+/* Chris's sign sits low in the photo: lift the frame so the dialog doesn't cover it */
+.ep1-pic-box[data-ph="van"]{ transform:translate(-50%,-66%); }
+@container (max-aspect-ratio: 1/1){ .ep1-pic-box[data-ph="van"]{ transform:translate(-50%,-70%); } }
+/* tall signs at the very top of these photos: nudge them out from under the top bar */
+@container (min-aspect-ratio: 1/1){ .ep1-pic-box:is([data-ph="baggage"],[data-ph="carousel6"],[data-ph="desk"]){ transform:translate(-50%,-44%); } }
+/* the car window: on wide screens show the whole window frame (the cabin edges are dark anyway) */
+@container (min-aspect-ratio: 7/5){
+  .ep1-pic-box[data-ph="drive"]{ width:88cqw; height:calc(88cqw * 941 / 1672); }
+}
+[data-bg="drive"] .ep1-pic-backdrop{ filter:blur(22px) brightness(.2); }
+.ep1-pic{ position:absolute; inset:0; width:100%; height:100%; display:block; object-fit:cover; -webkit-user-select:none; user-select:none; pointer-events:none; }
+/* people breathe */
+.ep1-pic-fig{ animation:ep1PhBreathe 4.8s ease-in-out infinite; will-change:transform; }
+@keyframes ep1PhBreathe{ 50%{ transform:scale(1.006, 1.011); } }
+/* plane window: the city zooms in behind the frame as we descend */
+.ep1-pic-zoom{ position:absolute; inset:0; transform-origin:50% 55%; animation:ep1PhApproach 24s cubic-bezier(.2,.5,.3,1) forwards; }
+@keyframes ep1PhApproach{ from{ transform:translateY(-1%) scale(1.05); } to{ transform:translateY(2.5%) scale(1.18); } }
+/* the drive: street sways behind the window, light streaks on the road, lamps sweep past */
+.ep1-pic-street{ position:absolute; inset:0; overflow:hidden; animation:ep1PhRumble 1.3s ease-in-out infinite; }
+.ep1-pic-pan{ position:absolute; inset:0; transform:scale(1.09); animation:ep1PhPan 26s ease-in-out infinite alternate; }
+@keyframes ep1PhPan{ from{ transform:translateX(2%) scale(1.09); } to{ transform:translateX(-2%) scale(1.09); } }
+@keyframes ep1PhRumble{ 0%,100%{ transform:translateY(0); } 35%{ transform:translateY(.14%); } 70%{ transform:translateY(-.08%); } }
+.ep1-pic-streaks i{ position:absolute; left:100%; height:.45%; border-radius:99px; opacity:.75; animation:ep1PhStreak 2.6s linear infinite;
+  background:linear-gradient(90deg, rgba(255,214,140,0), rgba(255,214,140,.9) 70%, #fff6dc); filter:blur(1px); }
+.ep1-pic-streaks i:nth-child(1){ top:76.5%; width:24%; }
+.ep1-pic-streaks i:nth-child(2){ top:79.5%; width:16%; animation-duration:1.9s; animation-delay:-.7s; background:linear-gradient(90deg, rgba(255,90,70,0), rgba(255,90,70,.85)); }
+.ep1-pic-streaks i:nth-child(3){ top:82%; width:30%; animation-duration:3.3s; animation-delay:-2s; }
+.ep1-pic-streaks i:nth-child(4){ top:78%; width:12%; animation-duration:2.2s; animation-delay:-1.4s; opacity:.5; }
+@keyframes ep1PhStreak{ from{ left:100%; } to{ left:-35%; } }
+.ep1-pic-sweep{ position:absolute; inset:0; pointer-events:none; mix-blend-mode:screen; opacity:.45;
+  background:linear-gradient(100deg, rgba(255,214,150,0) 42%, rgba(255,214,150,.22) 50%, rgba(255,214,150,0) 58%); background-size:300% 100%;
+  animation:ep1PhSweep 3.8s linear infinite; }
+@keyframes ep1PhSweep{ from{ background-position:0% 0; } to{ background-position:100% 0; } }
+.ep1-pic-night{ opacity:0; transition:opacity 7s ease; }
+.ep1-night .ep1-pic-night{ opacity:1; }
+.ep1-night .ep1-pic-sweep{ opacity:1; transition:opacity 7s ease; }
+/* hotel: the lamp glows, the city twinkles */
+.ep1-pic-lamp{ position:absolute; left:16.4%; top:33%; width:34%; aspect-ratio:1; transform:translate(-50%,-50%); pointer-events:none; mix-blend-mode:screen;
+  background:radial-gradient(circle, rgba(255,196,120,.32), rgba(255,196,120,.1) 38%, rgba(255,196,120,0) 66%); animation:ep1PhLamp 7s ease-in-out infinite; }
+@keyframes ep1PhLamp{ 0%,100%{ opacity:.75; } 45%{ opacity:1; } 52%{ opacity:.88; } }
+.ep1-pic-tw{ position:absolute; width:.7%; aspect-ratio:1; border-radius:50%; transform:translate(-50%,-50%) scale(.5); pointer-events:none; mix-blend-mode:screen; opacity:0;
+  background:radial-gradient(circle, #fff 0, rgba(255,232,190,.85) 28%, rgba(255,220,160,0) 70%); animation:ep1PhTw var(--d, 3s) ease-in-out infinite var(--o, 0s); }
+@keyframes ep1PhTw{ 0%,100%{ opacity:0; transform:translate(-50%,-50%) scale(.5); } 50%{ opacity:.95; transform:translate(-50%,-50%) scale(1.35); } }
+
+/* drive: parallax + nightfall (SVG fallback art) */
 .ep1-par-far, .ep1-par-mid, .ep1-streaks{ transform-box:view-box; }
 [data-bg="drive"] .ep1-par-far{ animation:ep1Scroll 120s linear infinite; }
 [data-bg="drive"] .ep1-par-mid{ animation:ep1Scroll 16s linear infinite; }
@@ -317,6 +368,8 @@ body.ep1-open{ overflow:hidden !important; }
 .ep1-target p{ margin:2px 0 0; font-size:13px; opacity:.85; }
 .ep1-target-img{ width:62px; flex-shrink:0; }
 .ep1-sc-svg{ width:100%; height:auto; display:block; filter:drop-shadow(0 10px 12px rgba(0,0,0,.5)); }
+.ep1-sc-photo{ position:relative; aspect-ratio:140 / 230; }
+.ep1-sc-photo img{ position:absolute; left:50%; bottom:5%; width:auto; max-width:none; transform:translateX(-50%); display:block; -webkit-user-select:none; user-select:none; pointer-events:none; }
 .ep1-belt{ position:relative; width:100%; max-width:1300px; height:min(230px, 32vh); margin-top:auto; }
 .ep1-sc{ position:absolute; bottom:0; width:clamp(92px, 11vw, 140px); border:none; background:none; padding:0; left:105%; animation:ep1Belt 20s linear infinite; animation-delay:calc(var(--i) * -4s); transition:filter .2s; }
 .ep1-belt.slow .ep1-sc{ animation-duration:26s; animation-delay:calc(var(--i) * -5.2s); }
@@ -365,6 +418,10 @@ body.ep1-open{ overflow:hidden !important; }
 .ep1-map-svg{ width:100%; height:auto; border-radius:18px; box-shadow:0 20px 50px rgba(0,0,0,.5); }
 .ep1-map-halls line{ stroke-linecap:round; }
 .ep1-map-you{ transition:transform .7s cubic-bezier(.4,.1,.2,1); }
+.ep1-map-photo{ box-shadow:0 20px 50px rgba(0,0,0,.55), 0 0 0 1px rgba(255,200,120,.18); }
+.ep1-map-photo .ep1-map-you{ transition:transform .9s cubic-bezier(.45,.05,.25,1); }
+.ep1-map-pulse{ opacity:.35; transform-box:fill-box; transform-origin:center; animation:ep1MapPulse 1.6s ease-out infinite; }
+@keyframes ep1MapPulse{ 0%{ transform:scale(.8); opacity:.55; } 100%{ transform:scale(2.3); opacity:0; } }
 .ep1-map-side{ display:grid; gap:10px; padding:14px; border-radius:18px; background:var(--glass2); border:1px solid var(--line); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
 .ep1-note{ padding:10px 12px; border-radius:12px; background:#fff3c4; color:#4a3b0c; font-size:14px; transform:rotate(-.8deg); box-shadow:0 6px 14px rgba(0,0,0,.3); }
 .ep1-signs{ display:grid; gap:6px; }

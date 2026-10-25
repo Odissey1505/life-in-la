@@ -1,33 +1,39 @@
-# Episode 1 «Arrival» — фото для сцен
+# Епізод 1 «Arrival»: фото сцен
 
-Епізод уже повністю працює на намальованих SVG-сценах. Щойно ти покладеш у цю папку (`episodes/episode-01/photos/`) файл із точною назвою з таблиці, епізод **сам** почне показувати фото замість малюнка — код міняти не треба.
+Фото вже стоять у сценах. Анімації працюють поверх них, бо частину кадрів розібрано на шари.
 
-**Формат для всіх:** WebP, 1920×1080 (16:9), 200–400 КБ.
+## Файли
 
-**Композиція:** нижні ~30% кадру частково закриває панель діалогу. Тому головне (обличчя, табличка, місто за вікном) тримай у верхніх двох третинах.
-
-**Стиль для всіх промптів:** додавай у кінці кожного:
-
-> photorealistic, cinematic film still, 35mm, shallow depth of field, warm Californian golden-hour color grade, rich but natural colors, contemporary, no text artifacts, no logos, no watermark, 16:9
-
-**Важливо про героя:** гравець — це сам учень. Усе знято **від першої особи**, обличчя героя ніде не показуємо.
-
-| Файл | Сцена | Промпт |
+| Файл | Сцена | Що з ним відбувається |
 |---|---|---|
-| `s1-cabin.webp` | 1 · салон літака | Interior of a modern passenger airplane cabin just after landing, view from a window seat looking down the aisle, warm golden late-afternoon sunlight streaming through the oval windows, passengers' heads silhouetted, seat-belt sign glowing |
-| `s1-window.webp` | 1 · вид з ілюмінатора | First-person view through an airplane window during final approach to Los Angeles at golden hour, downtown LA skyline and palm-lined streets below, sun low on the horizon, a bit of the wing visible, window frame in the edges of the shot |
-| `s2-terminal.webp` | 2 · коридор терміналу | First-person view walking through a bright modern airport arrivals corridor at sunset, huge glass walls, palm trees and planes outside, overhead signs "Arrivals · Passport Control", travelers with suitcases slightly blurred |
-| `s3-passport-control.webp` | 3 · паспортний контроль | First-person view at an airport immigration booth, a friendly professional officer in a dark navy uniform behind the glass counter looking at the camera with a polite smile, queue belts, overhead sign "Passport Control", cool fluorescent light mixed with warm evening light |
-| `s4-baggage-claim.webp` | 4 · видача багажу | Wide first-person view of an airport baggage claim hall, a long luggage carousel in the lower half of the frame (empty belt, no suitcases), big sign "Baggage Claim 4" above, evening light |
-| `s5-baggage-service.webp` | 5 · стійка багажної служби | First-person view of an airport baggage service desk, a friendly airport employee in a green vest with a lanyard behind the counter, shelves of lost suitcases behind her, sign "Baggage Service — Lost & Delayed Bags" |
-| `s5-carousel-6.webp` | 5 · стрічка 6 | Airport baggage claim hall, a luggage carousel in the lower half of the frame (empty belt, no suitcases), big sign "Baggage Claim 6", slightly quieter and darker than carousel 4 |
-| `s6-pickup-zone.webp` | 6 · зона посадки | First-person view stepping outside an LA airport terminal into the ground transportation pickup zone at early evening, purple-orange sky, palm trees, cars with headlights at the curb, green sign "Ground Transportation · Doors 3–6", a coffee stand near "Door 5" |
-| `s6-chris-van.webp` | 6 · Кріс біля мінівена | At the airport pickup curb at dusk, a friendly man in his 30s in casual clothes standing next to a silver minivan, holding a white sign that reads "LA EXCHANGE — WELCOME", smiling at the camera, palm trees behind |
-| `s7-drive.webp` | 7 · у машині | First-person view from the passenger seat of a car looking through the side window at a Los Angeles street at sunset, palm trees, billboards, downtown skyline in the distance, the first city lights turning on, soft reflections on the glass |
-| `s8-hotel-room.webp` | 8 · готельний номер | Cozy modern hotel room at night, first-person view from near the door, warm bedside lamp, a black medium suitcase with an orange ribbon on the handle near the bed, large window with Los Angeles city lights glittering outside |
+| `s1-cabin.webp` | 1 · салон | камера наближається, «посадка» трусить кадр |
+| `s1-window.webp` + `s1-window-frame.webp` | 1 · ілюмінатор | рама стоїть, а місто за склом наближається (літак знижується) |
+| `s3-passport-control.webp` + `s3-officer.webp` | 3 · паспортний контроль | офіцерка ледь помітно «дихає» |
+| `s4-baggage-claim.webp` | 4 · стрічка 4 | валізи їдуть по стрічці на фото |
+| `s5-baggage-service.webp` + `s5-agent.webp` | 5 · багажна служба | працівниця «дихає» |
+| `s5-carousel-6.webp` | 5 · стрічка 6 | валізи для вибору стоять на стрічці |
+| `s6-pickup-zone.webp` | 6 · зона посадки | — |
+| `s6-map.webp` | 6 · мапа терміналу | маркер «YOU» пульсує і переїжджає між вузлами, пройдений шлях позначається помаранчевим пунктиром. Вузли прив'язані до місць на цій картинці, тож нова мапа має мати те саме розташування |
+| `s6-chris-van.webp` + `s6-chris.webp` | 6 · Кріс | Кріс «дихає», кадр піднятий, щоб табличку не закривав діалог |
+| `s7-drive.webp` + `s7-drive-night.webp` + `s7-drive-frame.webp` + `s7-drive-night-frame.webp` | 7 · поїздка | вулиця гойдається за склом, по дорозі біжать вогні, повз «пропливають» ліхтарі; на «nightfall» захід плавно переходить у ніч |
+| `s8-hotel-room.webp` | 8 · готель | лампа тепло світиться, вогні міста мерехтять |
 
-## Примітки
+Файли `-frame` — це ті самі фото з вирізаним склом. Файли `-officer`, `-agent`, `-chris` — вирізані люди на прозорому фоні. Вони точно накладаються на основне фото.
 
-- **Валізи в міні-іграх** (стрічка, вибір валізи) лишаються намальованими. Там важливо, щоб розмір, колір і стрічка точно відповідали завданню.
-- **Точки для дослідження** (пульсуючі кружечки) розставлені під SVG-сцени. Якщо на фото табличка чи вікно в іншому місці, підправ `x` / `y` (у відсотках) у блоці `hotspots` потрібної сцени в `episodes/episode-01/episode-01.js`.
-- **Наявне фото `arrival`** (сцена 2 і спогад «First Steps in LA») — на ньому **американський паспорт**. Герой у нас з України, тож при нагоді варто замінити на фото з українським паспортом.
+## Валізи (міні-ігри у сценах 4–5)
+
+| Файл | Яка валіза |
+|---|---|
+| `suitcase-mine.webp` | **твоя**: середня, чорна, помаранчева стрічка на ручці |
+| `suitcase-c4-1` … `c4-5` | обманки на стрічці 4: велика чорна · синя · червона з жовтою біркою · маленька чорна з помаранчевою наліпкою · сіра зі стрічкою |
+| `suitcase-c6-1`, `c6-2`, `c6-4`, `c6-5` | обманки на стрічці 6: чорна з помаранчевою біркою · велика чорна зі стрічкою · сіра зі стрічкою · просто чорна |
+
+Розмір валізи (маленька / середня / велика) задає сама гра, тому всі фото однакової висоти, обрізані по контуру, з прозорим фоном. Щоб замінити валізу, поклади WebP із прозорим фоном і тією самою назвою. Якщо файлу немає, показується намальована валіза.
+
+## Якщо захочеш замінити фото
+
+- **Фото без додаткових шарів** (салон, стрічки, зона посадки, готель) просто заміни файлом з тією самою назвою.
+- **Фото з шарами** (ілюмінатор, контроль, багажна служба, Кріс, поїздка): разом із новим фото потрібні нові шари, інакше вирізаний шар з'їде. Надішли нове фото мені, і я переріжу шари. Або видали старі файли шарів: епізод працюватиме, просто без цієї анімації.
+- **Сцена 2 (коридор терміналу)** окремого фото поки не має. Вона показує вбудоване фото `arrival` з головної сторінки. На ньому американський паспорт, тож кадр обрізано так, щоб паспорта не було видно. Щоб поставити своє, поклади сюди `s2-terminal.webp`.
+- Формат: WebP, 16:9.
+- Якщо фото якоїсь сцени немає, показується намальована версія сцени, тож епізод не ламається.
