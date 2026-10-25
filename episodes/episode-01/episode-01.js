@@ -2610,9 +2610,9 @@ function openModalEp(html, opts = {}){
   requestAnimationFrame(() => { const b = EP.modal.querySelector('.ep1-mbox button:not(.ep1-pop-x), .ep1-mbox input'); b && b.focus({ preventScroll:true }); });
 }
 function closeModalEp(){ EP.modal.hidden = true; EP.modal.innerHTML = ''; if(EP.paused) resume(); }
-function confirmBox(title, text, yes, no){
+function confirmBox(title, text, yes, no, opts = {}){
   const wasPaused = EP.paused;
-  openModalEp(`<h3>${esc(title)}</h3><p>${esc(text)}</p><div class="ep1-row"><button type="button" class="ep1-btn ep1-btn-ghost" data-no>Cancel</button><button type="button" class="ep1-next" data-yes>Yes</button></div>`,
+  openModalEp(`<h3>${esc(title)}</h3><p>${esc(text)}</p>${opts.ua ? `<p class="ep1-mini">${esc(opts.ua)}</p>` : ''}<div class="ep1-row"><button type="button" class="ep1-btn ep1-btn-ghost" data-no>Cancel</button><button type="button" class="ep1-next ${opts.danger ? 'ep1-danger' : ''}" data-yes>${esc(opts.yes || 'Yes')}</button></div>`,
     { noX:true, onClick: e => {
       if(e.target.closest('[data-yes]')){ EP.paused = false; EP.modal.hidden = true; EP.modal.innerHTML = ''; resumeAudio(); yes(); }
       if(e.target.closest('[data-no]')){ if(no) no(); else closeModalEp(); }
@@ -2631,6 +2631,7 @@ function pause(){
       <button type="button" class="ep1-btn ep1-btn-ghost" data-pm="scene" ${sc ? '' : 'disabled'}>↺ Restart this scene</button>
       <button type="button" class="ep1-btn ep1-btn-ghost" data-pm="episode">⟲ Restart the episode</button>
       <button type="button" class="ep1-btn ep1-btn-ghost" data-pm="exit">🏠 Save &amp; go back to my room</button>
+      ${typeof window.resetProgress === 'function' ? '<button type="button" class="ep1-btn ep1-btn-ghost ep1-btn-danger" data-pm="erase">🗑 Reset Episode 1 (erase progress)</button>' : ''}
     </div><p class="ep1-mini">Your progress is saved automatically.</p>`, { onClick: e => {
       const b = e.target.closest('[data-pm]'); if(!b) return;
       const a = b.dataset.pm;
@@ -2640,6 +2641,10 @@ function pause(){
       const back = () => { EP.paused = false; pause(); };
       if(a === 'scene') confirmBox('Restart this scene?', 'You go back to the start of this scene. Your rewards and saved phrases stay.', () => { EP.root.classList.remove('ep1-paused'); gotoScene(sc.id, null, { noCard:false }); }, back);
       if(a === 'episode') confirmBox('Restart Episode 1?', 'You go back to Scene 1. Your rewards, phrases, journal and messages stay.', () => { EP.root.classList.remove('ep1-paused'); restartEpisode(); }, back);
+      if(a === 'erase') confirmBox('Reset Episode 1 to the very beginning?',
+        "Everything from this episode is erased: your place in the story, choices, answers, all its chats, phrases, items, achievements and memories. Your journal stays. This can't be undone.",
+        () => { Voice.stop(); Sound.stop(); window.resetProgress('episode', 'ep1'); }, back,
+        { ua:'Епізод почнеться з нуля, усі переписки скинуться. Щоденник залишиться.', yes:'Yes, reset it', danger:true });
     } });
 }
 function resumeAudio(){ EP.root.classList.remove('ep1-paused'); Sound.resume(); }
@@ -2793,8 +2798,9 @@ const LilaStory = {
     if(story && story.world && Array.isArray(story.world.threads) && story.world.threads.includes('coordinator')) thread('coordinator');
     if(chat.coordinator) thread('coordinator');
     DATA.messages.forEach(m => {
-      if(Array.isArray(chat[m.id])) m.chat = m.id === 'mia' ? migrateMiaChat(chat[m.id]) : chat[m.id];
-      if(m.chat && m.chat.length) refreshMeta(m);
+      if(!Array.isArray(chat[m.id])) return;   // nothing saved for this thread → keep its original look
+      m.chat = m.id === 'mia' ? migrateMiaChat(chat[m.id]) : chat[m.id];
+      if(m.chat.length) refreshMeta(m);
     });
     if(!story) return;
     if(story.episodes && typeof story.episodes === 'object') DATA.episodes = story.episodes;
@@ -2838,5 +2844,47 @@ const LilaStory = {
   open, close, PHRASES, SCENES
 };
 window.LilaStory = LilaStory;
+
+/* =========================================================================
+   RESET — what "Reset Episode 1" removes from a saved progress snapshot.
+   index.html builds the snapshot, calls clear(), saves the result and reloads.
+   Removed: episode state (scene, choices, answers, tasks, final mission),
+   Mia's chat back to the pre-flight messages, the Exchange Program thread,
+   and every world change this episode makes (phrases, Suitcase, Chris,
+   achievements, the "First Steps" memory, LAX + hotel on the map, story
+   timeline). Kept: the journal (incl. the auto entry), day, device settings.
+   ========================================================================= */
+const EP1_ACH = ['first-talk','problem-solver','la-newcomer','explorer'];
+function clearEp1(snap){
+  snap = snap || {};
+  const story = (snap.story && typeof snap.story === 'object') ? snap.story : { v:1, episodes:{}, world:{} };
+  story.episodes = Object.assign({}, story.episodes); delete story.episodes.ep1;
+  const w = story.world = Object.assign({}, story.world);
+  if(Array.isArray(w.phrases)) w.phrases = w.phrases.filter(id => !PHRASES[id]);
+  if(Array.isArray(w.items)) w.items = w.items.filter(n => START_ITEMS.includes(n) || !ITEMS[n]);
+  if(w.ach){ w.ach = Object.assign({}, w.ach); EP1_ACH.forEach(id => delete w.ach[id]); }
+  if(Array.isArray(w.memories)) w.memories = w.memories.filter(id => id !== 'm0');
+  if(w.locations){ w.locations = Object.assign({}, w.locations); delete w.locations.lax; delete w.locations.hotel; }
+  if(Array.isArray(w.people)) w.people = w.people.filter(id => id !== 'chris');
+  if(w.story){ w.story = Object.assign({}, w.story); delete w.story.arrival; delete w.story['first-night']; }
+  if(Array.isArray(w.threads)) w.threads = w.threads.filter(id => id !== 'coordinator');
+  snap.chat = Object.assign({}, snap.chat);
+  delete snap.chat.coordinator;
+  delete snap.chat.mia;            // no saved chat → the page shows Mia's original pre-flight messages
+  snap.story = story;
+  return snap;
+}
+window.LILA_EPISODES = window.LILA_EPISODES || [];
+if(!window.LILA_EPISODES.some(e => e.id === 'ep1')) window.LILA_EPISODES.push({
+  id:'ep1', n:1, title:'Arrival', icon:'✈️',
+  status(){
+    const s = DATA.episodes && DATA.episodes.ep1;
+    if(!s) return 'Not started';
+    if(s.sceneId && SCENE_BY_ID[s.sceneId]) return `In progress · Scene ${SCENE_BY_ID[s.sceneId].n} of 8`;
+    if(s.completed) return 'Completed';
+    return (s.completedScenes && s.completedScenes.length) ? `In progress · ${s.completedScenes.length} of 8 scenes` : 'Not started';
+  },
+  clear: clearEp1
+});
 
 })();

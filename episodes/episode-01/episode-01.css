@@ -184,6 +184,10 @@ body.ep1-open{ overflow:hidden !important; }
 .ep1-btn:hover:not(:disabled){ background:rgba(255,255,255,.18); }
 .ep1-btn-ghost{ background:transparent; }
 .ep1-btn-hot{ background:var(--o); color:#2a1400; border-color:transparent; }
+.ep1-btn-danger{ color:#ffb4a3; border-color:rgba(255,120,95,.5); }
+.ep1-btn-danger:hover:not(:disabled){ background:rgba(255,95,70,.16); }
+.ep1-next.ep1-danger{ background:#e0533d; box-shadow:0 10px 24px rgba(224,83,61,.35); }
+.ep1-next.ep1-danger:hover:not(:disabled){ box-shadow:0 14px 30px rgba(224,83,61,.45); }
 .ep1-btn-hot:hover:not(:disabled){ background:#ff9d5c !important; }
 
 /* choices / quiz */
