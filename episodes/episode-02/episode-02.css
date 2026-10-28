@@ -1,0 +1,209 @@
+/* =========================================================================
+   LIFE IN LA — Episode 2 "FIRST NIGHT IN LA" · scene art + interactions
+   (the player itself is styled in episodes/engine/lila-engine.css)
+   ========================================================================= */
+
+/* ---------- night atmosphere in the drawn scenes ---------- */
+.ep2-neon{ animation:ep2Neon 7s linear infinite; }
+.ep2-neon.slow{ animation-duration:11s; animation-delay:-3s; }
+@keyframes ep2Neon{ 0%, 41%, 43%, 45%, 100%{ opacity:1; } 42%, 44%{ opacity:.45; } }
+.ep2-star{ animation:ep2Star var(--d, 3s) ease-in-out infinite; }
+@keyframes ep2Star{ 50%{ opacity:.15; } }
+.ep2-streak{ fill:#fff3d6; opacity:.7; transform-box:view-box; animation:ep2Streak var(--d, 3s) linear infinite var(--o, 0s); }
+.ep2-streak.red{ fill:#ff5a4a; }
+@keyframes ep2Streak{ from{ transform:translateX(0); } to{ transform:translateX(2000px); } }
+.ep2-led{ animation:ep2Led 1.2s steps(2, jump-none) infinite; }
+@keyframes ep2Led{ 50%{ opacity:.25; } }
+.ep2-lamp{ animation:ep2Lamp 7s ease-in-out infinite; }
+@keyframes ep2Lamp{ 0%, 100%{ opacity:.85; } 45%{ opacity:1; } }
+.ep2-phoneglow{ animation:ep2Glow 2.6s ease-in-out infinite; }
+@keyframes ep2Glow{ 50%{ opacity:.45; } }
+.ep2-dog{ transform-box:fill-box; transform-origin:50% 100%; animation:ep2Dog 1.6s ease-in-out infinite; }
+@keyframes ep2Dog{ 50%{ transform:translateY(-2px); } }
+.ep1-bg.cam-shake{ animation:ep2Shake .6s ease 2; }
+@keyframes ep2Shake{ 0%, 100%{ transform:scale(1.04) translate(0, 0); } 20%{ transform:scale(1.04) translate(-8px, 3px); } 40%{ transform:scale(1.04) translate(7px, -3px); } 60%{ transform:scale(1.04) translate(-5px, 2px); } 80%{ transform:scale(1.04) translate(4px, -1px); } }
+.ep1[data-ep="ep2"] .ep1-title-big{ font-size:clamp(46px, 9vw, 132px); letter-spacing:clamp(4px, 1vw, 14px); }
+
+/* ---------- Scene 1: the key card lock ---------- */
+.g-lock, .g-wifi, .g-card, .g-hood, .g-menu, .g-meal, .g-jake{ justify-content:center; }
+.ep2-lock{ display:flex; flex-direction:column; align-items:center; gap:14px; }
+.ep2-lock-plate{ width:180px; padding:18px 16px 22px; border-radius:16px; background:linear-gradient(160deg, #3a2a20, #1e1510); box-shadow:0 24px 50px rgba(0,0,0,.6), inset 0 0 0 2px rgba(255,255,255,.06); display:grid; gap:14px; justify-items:center; }
+.ep2-lock-num{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:34px; color:#e8c98a; letter-spacing:4px; }
+.ep2-lock-reader{ width:92px; height:150px; border-radius:14px; background:#141418; display:flex; flex-direction:column; align-items:center; justify-content:space-around; box-shadow:inset 0 0 0 2px #2a2a32; }
+.ep2-lock-led{ width:16px; height:16px; border-radius:50%; background:#3a1414; box-shadow:0 0 0 3px #22080a; }
+.ep2-lock-led.bad{ animation:ep2Bad .9s steps(2, jump-none) 2; }
+@keyframes ep2Bad{ 0%, 100%{ background:#ff3b3b; box-shadow:0 0 18px #ff3b3b; } 50%{ background:#3a1414; box-shadow:none; } }
+.ep2-lock-slot{ width:60px; height:44px; border-radius:8px; background:#24242c; }
+.ep2-lock-tap{ font-size:16px; padding:12px 20px; }
+.ep2-lock-msg{ min-height:24px; font-weight:800; color:#ffb4a3; text-shadow:0 2px 10px #000; }
+
+/* ---------- Scene 2: phone Wi-Fi screen ---------- */
+.ep2-phone{ width:min(330px, 100%); border-radius:34px; padding:12px; background:linear-gradient(160deg, #20283a, #0d121b); box-shadow:0 30px 70px rgba(0,0,0,.6); color:#1f2735; }
+.ep2-phone > *{ background:#f4f5f8; }
+.ep2-phone-status{ display:flex; justify-content:space-between; padding:10px 18px 4px; font-size:12px; font-weight:800; border-radius:24px 24px 0 0; }
+.ep2-phone-h{ padding:6px 16px 10px; font-size:14px; color:#2f7ad8; }
+.ep2-phone-h b{ display:block; color:#1f2735; font-family:'Baloo 2', sans-serif; font-size:24px; }
+.ep2-wifi-row{ display:flex; justify-content:space-between; align-items:center; width:100%; padding:12px 16px; border:none; border-top:1px solid #e3e6ec; font-size:15px; font-weight:700; text-align:left; color:#1f2735 !important; }
+.ep2-net:hover, .ep2-net.sel{ background:#e8f0fc; }
+.ep2-wifi-cap{ padding:12px 16px 6px; font-size:11px; letter-spacing:1px; color:#7a8394; font-weight:800; }
+.ep2-switch{ width:44px; height:26px; border-radius:999px; background:#cfd4dc; position:relative; }
+.ep2-switch.on{ background:#3ecf6b; }
+.ep2-switch::after{ content:""; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#fff; transition:.2s; }
+.ep2-switch.on::after{ left:21px; }
+.ep2-bars{ display:inline-flex; align-items:flex-end; gap:2px; height:12px; margin-left:4px; }
+.ep2-bars i{ width:3px; background:#cfd4dc; border-radius:1px; }
+.ep2-bars i:nth-child(1){ height:4px; } .ep2-bars i:nth-child(2){ height:7px; } .ep2-bars i:nth-child(3){ height:10px; } .ep2-bars i:nth-child(4){ height:12px; }
+.ep2-bars i.on{ background:#1f2735; }
+.ep2-wifi-pass{ padding:12px 16px; display:grid; gap:8px; border-top:1px solid #e3e6ec; font-size:13px; color:#4a5263; }
+.ep2-wifi-pass label{ display:grid; gap:6px; }
+.ep2-input{ border:1px solid #cfd4dc; border-radius:10px; padding:9px 11px; font-size:15px; font-family:inherit; color:#1f2735; background:#fff; }
+.ep2-wifi-note{ padding:12px 16px 16px; font-size:14px; border-radius:0 0 24px 24px; border-top:1px solid #e3e6ec; }
+.ep2-wifi-note.bad{ color:#c4372d; }
+
+/* ---------- Scene 2: key card sleeve ---------- */
+.ep2-sleeve-wrap{ display:flex; flex-direction:column; align-items:center; gap:16px; }
+.ep2-sleeve{ position:relative; width:min(380px, 92vw); aspect-ratio:1.55; perspective:900px; }
+.ep2-sleeve-front, .ep2-sleeve-in{ position:absolute; inset:0; border-radius:16px; padding:20px; backface-visibility:hidden; transition:transform .8s cubic-bezier(.3,.7,.2,1); box-shadow:0 24px 50px rgba(0,0,0,.55); }
+.ep2-sleeve-front{ background:linear-gradient(140deg, #7a2f4f, #3a1f3a); color:#ffe0ee; display:flex; flex-direction:column; justify-content:space-between; }
+.ep2-sleeve-in{ background:#fbf7f0; color:#2a1f1a; transform:rotateY(180deg); display:grid; align-content:center; gap:8px; }
+.ep2-sleeve.open .ep2-sleeve-front{ transform:rotateY(-180deg); }
+.ep2-sleeve.open .ep2-sleeve-in{ transform:rotateY(0); }
+.ep2-sleeve-logo{ font-family:'Baloo 2', sans-serif; font-weight:800; letter-spacing:3px; font-size:15px; }
+.ep2-sleeve-room{ font-family:'Baloo 2', sans-serif; font-size:30px; } .ep2-sleeve-room b{ font-size:46px; }
+.ep2-sleeve-w{ font-family:'Caveat', cursive; font-size:24px; }
+.ep2-sleeve-row{ display:flex; justify-content:space-between; gap:10px; padding:6px 4px; border-bottom:1px dashed #d8cfc0; font-size:14.5px; }
+.ep2-sleeve-row b{ font-family:'Courier New', monospace; }
+.ep2-pass{ background:#fff3c4; padding:0 6px; border-radius:4px; }
+.ep2-connected{ padding:10px 18px; border-radius:999px; background:rgba(109,187,117,.25); color:#cff3d3; font-weight:800; animation:ep1Pop2b .3s ease both; }
+
+/* ---------- Scene 3: video call ---------- */
+.g-call{ justify-content:center; }
+.ep2-call{ width:min(560px, 100%); }
+.ep2-call.incoming{ display:flex; flex-direction:column; align-items:center; gap:10px; padding:26px 20px; border-radius:30px; background:rgba(10,14,24,.78); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid var(--line); animation:ep1Pop2b .35s ease both; }
+.ep2-call-ava{ width:150px; height:150px; border-radius:50%; overflow:hidden; box-shadow:0 0 0 6px rgba(90,182,249,.35); animation:ep2Ring 1.3s ease-in-out infinite; }
+.ep2-call-ava svg{ width:100%; height:100%; display:block; transform:scale(1.6) translateY(4%); }
+@keyframes ep2Ring{ 50%{ box-shadow:0 0 0 16px rgba(90,182,249,0); } }
+.ep2-call-name{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:28px; }
+.ep2-call-sub{ opacity:.75; }
+.ep2-call-btns{ display:flex; gap:44px; margin-top:12px; }
+.ep2-cbtn{ width:68px; height:68px; border-radius:50%; border:none; font-size:24px; color:#fff !important; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; }
+.ep2-cbtn small{ position:absolute; top:76px; font-size:12.5px; font-weight:700; color:var(--w); white-space:nowrap; }
+.ep2-cbtn.no{ background:#e5484d; } .ep2-cbtn.yes{ background:#3ecf6b; animation:ep2Ring 1.3s ease-in-out infinite; }
+.ep2-call.live{ animation:ep1Pop2b .35s ease both; }
+.ep2-call-video{ position:relative; border-radius:24px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,.6); border:2px solid rgba(255,255,255,.12); }
+.ep2-mia-svg{ display:block; width:100%; height:auto; }
+.ep2-mia-fig{ transform-box:fill-box; transform-origin:50% 100%; animation:ep2Talk 3.2s ease-in-out infinite; }
+@keyframes ep2Talk{ 25%{ transform:rotate(-1deg) scale(1.01); } 60%{ transform:rotate(1deg); } }
+.ep2-call-tag{ position:absolute; left:12px; top:12px; padding:6px 12px; border-radius:999px; background:rgba(0,0,0,.45); font-weight:800; font-size:13px; }
+.ep2-call-time{ font-family:'Courier New', monospace; opacity:.85; margin-left:4px; }
+.ep2-call-self{ position:absolute; right:12px; bottom:12px; width:22%; aspect-ratio:3/4; border-radius:12px; background:linear-gradient(160deg, #3a2a22, #1c1410); border:2px solid rgba(255,255,255,.25); display:flex; align-items:flex-end; justify-content:center; font-size:11px; padding-bottom:4px; }
+.ep2-hangup .ep2-call{ transition:transform .45s ease, opacity .45s ease; transform:scale(.9); opacity:0; }
+.ep2-endcall{ background:linear-gradient(135deg, #e5484d, #c4372d) !important; box-shadow:0 10px 24px rgba(229,72,77,.4) !important; }
+
+/* ---------- Scene 4: neighbourhood map ---------- */
+.ep2-hood{ width:min(1060px, 100%); display:grid; grid-template-columns:1.35fr 1fr; gap:14px; align-items:start; }
+.ep2-hood-svg{ width:100%; height:auto; border-radius:20px; box-shadow:0 20px 50px rgba(0,0,0,.55); }
+.ep2-hood-you{ transition:transform .8s cubic-bezier(.45,.05,.25,1); }
+.ep2-hood-side{ display:grid; gap:10px; padding:14px; border-radius:18px; background:var(--glass2); border:1px solid var(--line); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+.ep2-hood-at b{ display:block; font-size:15px; }
+.ep2-hood-peek{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+
+/* ---------- Scene 5: the menu ---------- */
+.ep2-menu{ width:min(1000px, 100%); display:grid; grid-template-columns:1.2fr 1fr; gap:14px; align-items:start; }
+.ep2-menu-card{ padding:12px 16px; border-radius:18px; background:#fbf6ec; color:#2a1f1a; box-shadow:0 24px 60px rgba(0,0,0,.55); border:6px double #c43c4a; }
+.ep2-menu-top{ text-align:center; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:24px; letter-spacing:3px; color:#a8222f; }
+.ep2-menu-top small{ display:block; font-family:'Caveat', cursive; font-size:19px; letter-spacing:0; color:#5a3a2a; font-weight:600; }
+.ep2-menu-h{ margin:6px 0 2px; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:16px; color:#a8222f; border-bottom:1px dashed #d8c8b0; }
+.ep2-menu-h small{ font-family:'Nunito', sans-serif; font-weight:700; font-size:11.5px; color:#8a7a66; margin-left:6px; }
+.ep2-mi{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; padding:5px 10px; margin:2px 0; border-radius:12px; border:2px solid transparent; background:transparent; color:#2a1f1a !important; font-size:15px; font-weight:700; transition:.15s; }
+.ep2-mi:hover{ background:#f3e8d6; }
+.ep2-mi.on{ border-color:#c43c4a; background:#fde9e2; }
+.ep2-mi-i{ font-size:22px; }
+.ep2-mi-n{ flex:1; display:flex; flex-direction:column; }
+.ep2-mi-n small{ font-weight:600; font-size:12px; color:#7a6a58; }
+.ep2-mi-p{ font-family:'Baloo 2', sans-serif; font-weight:800; color:#a8222f; }
+.ep2-menu-sub{ margin-top:8px; padding:8px 12px; border-radius:12px; background:#2a1f1a; color:#fff; display:flex; flex-wrap:wrap; align-items:baseline; gap:8px; }
+.ep2-menu-sub b{ font-family:'Baloo 2', sans-serif; font-size:24px; color:#ffd38a; }
+.ep2-menu-sub small{ opacity:.7; font-size:12px; width:100%; }
+.ep2-menu-side{ position:sticky; top:0; max-height:100%; display:grid; gap:10px; padding:14px; border-radius:18px; background:var(--glass2); border:1px solid var(--line); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+.ep2-ask{ display:flex; flex-wrap:wrap; gap:6px; }
+.ep2-bubbles{ display:grid; gap:6px; }
+.ep2-bub{ padding:9px 12px; border-radius:14px; font-size:14.5px; line-height:1.4; max-width:92%; animation:ep1BubIn .3s ease both; }
+.ep2-bub.me{ justify-self:end; background:rgba(255,138,61,.28); }
+.ep2-bub.them{ background:rgba(255,255,255,.1); }
+.ep2-menu-order{ font-size:14.5px; }
+.ep2-menu-side .ep1-next{ margin:0; width:100%; }
+
+/* ---------- Scene 5: the food arrives ---------- */
+.ep2-meal{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; justify-content:center; }
+.ep2-plate{ width:min(520px, 90vw); height:auto; filter:drop-shadow(0 20px 30px rgba(0,0,0,.55)); animation:ep2Slide .8s cubic-bezier(.2,.9,.3,1.1) both; }
+@keyframes ep2Slide{ from{ transform:translateX(60px) rotate(4deg); opacity:0; } }
+.ep2-receipt{ width:200px; padding:14px 14px 18px; background:#fbf7f0; color:#2a1f1a; font-family:'Courier New', monospace; font-size:13px; box-shadow:0 18px 40px rgba(0,0,0,.5); transform:rotate(3deg);
+  -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 8px) no-repeat, radial-gradient(circle 5px at 50% 100%, #0000 98%, #000) bottom/12px 9px repeat-x; mask:linear-gradient(#000 0 0) top/100% calc(100% - 8px) no-repeat, radial-gradient(circle 5px at 50% 100%, #0000 98%, #000) bottom/12px 9px repeat-x; }
+.ep2-receipt > div{ display:flex; justify-content:space-between; padding:2px 0; }
+.ep2-receipt-h{ justify-content:center !important; font-weight:800; margin-bottom:6px; letter-spacing:1px; }
+.ep2-receipt-t{ border-top:1px dashed #8a7a66; margin-top:6px; padding-top:6px !important; font-weight:800; }
+.ep2-receipt small{ opacity:.7; }
+
+/* ---------- Scene 6: questions for Jake ---------- */
+.ep2-jq{ width:min(760px, 100%); }
+.ep2-jq-h{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; font-family:'Baloo 2', sans-serif; font-size:17px; text-shadow:0 2px 10px #000; }
+.ep2-jq-n{ font-family:'Nunito', sans-serif; font-weight:800; font-size:13.5px; padding:5px 12px; border-radius:999px; background:rgba(0,0,0,.45); }
+.ep2-jq-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; }
+.ep2-jq-t{ position:relative; display:flex; flex-direction:column; align-items:center; gap:6px; padding:16px 10px; border-radius:18px; border:1px solid var(--line); background:var(--glass2); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); font-weight:800; font-size:14.5px; transition:.15s; }
+.ep2-jq-t span{ font-size:30px; }
+.ep2-jq-t:hover{ border-color:var(--o); transform:translateY(-2px); }
+.ep2-jq-t.done{ border-color:rgba(109,187,117,.6); background:rgba(30,60,40,.75); }
+.ep2-jq-t i{ position:absolute; top:8px; right:10px; font-style:normal; color:#a9e6ae; }
+.ep2-jq-t.own{ border-style:dashed; }
+.ep2-jq-ask{ display:grid; gap:10px; padding:18px; border-radius:20px; background:var(--glass2); border:1px solid var(--line); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); animation:ep1Pop2b .25s ease both; }
+
+/* ---------- Scene 7: reply to Rachel (inside the phone) ---------- */
+.ep2-ph-p{ margin:0 0 6px; font-size:13.5px; }
+.ep2-styles{ display:grid; gap:6px; }
+.ep2-style{ flex-direction:column; align-items:flex-start !important; gap:4px !important; }
+.ep2-style-l{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:14px; }
+.ep2-style-t{ font-weight:600; font-size:13px; color:#4a5263; }
+.ep2-ps{ display:flex; align-items:center; gap:8px; margin-top:8px; font-size:13.5px; font-weight:700; color:#243447; }
+.ep2-ps input{ width:18px; height:18px; accent-color:var(--o); }
+
+/* ---------- final mission + ending ---------- */
+.ep2-vn{ width:min(1060px, 100%); }
+.ep2-vn .ep1-talk{ grid-template-columns:1.2fr 1fr; }
+.ep2-tbc{ letter-spacing:8px; font-size:clamp(30px, 6vw, 72px); }
+.ep2-next-t{ font-size:clamp(28px, 5vw, 60px); }
+.ep2-sum-grid{ grid-template-columns:repeat(4, 1fr); }
+.ep2-sum-rewards{ display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }
+.ep2-rw{ padding:12px 14px; border-radius:16px; background:rgba(255,255,255,.05); border:1px solid var(--line); text-align:left; display:grid; gap:2px; }
+.ep2-rw b{ font-family:'Baloo 2', sans-serif; font-size:18px; }
+.ep2-rw small{ font-size:12.5px; opacity:.75; }
+.ep2-mem-img{ background-color:#1c1a44; }
+.ep1-sum-btns .ep1-btn:disabled{ opacity:.5; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px){
+  .ep2-hood, .ep2-menu{ grid-template-columns:1fr; }
+  .ep2-sum-rewards{ grid-template-columns:1fr; }
+  .ep2-vn .ep1-talk{ grid-template-columns:1fr; }
+}
+@media (max-width: 720px){
+  .ep2-sum-grid{ grid-template-columns:repeat(2, 1fr); }
+  .ep2-jq-grid{ grid-template-columns:repeat(2, 1fr); }
+  .ep2-jq-t{ padding:12px 6px; font-size:13.5px; }
+  .ep2-jq-t span{ font-size:24px; }
+  .ep2-call-ava{ width:120px; height:120px; }
+  .ep2-receipt{ transform:none; width:100%; max-width:320px; }
+  .ep2-lock-plate{ width:150px; }
+}
+@media (max-height: 640px) and (min-width: 721px){
+  .ep2-sleeve{ width:300px; }
+}
+
+/* ---------- Drawn scenes on tall (portrait) screens ----------
+   The 16:9 art is cropped to its middle on a phone, so the neon signs
+   that sit at the edges get a second, centred version. */
+.ep1 .ep2-port{ display:none; }
+@media (max-aspect-ratio: 4/5){
+  .ep1 .ep2-port{ display:inline; }
+  .ep1 .ep2-land{ display:none; }
+}
