@@ -43,7 +43,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="episodes/engine/lila-engine.css">
 <link rel="stylesheet" href="episodes/episode-01/episode-01.css">
+<link rel="stylesheet" href="episodes/episode-02/episode-02.css">
 <style>
   :root{
     --sunset-orange:#FF8A3D;
@@ -1209,9 +1211,10 @@ function resetEpisodeConfirmHTML(ep){
     <p class="ua">Скинути епізод ${ep.n} до початку? Це не можна скасувати.</p>
     <ul>
       <li>Your place in the story, choices and answers</li>
-      <li>All chats from this episode (Mia, Exchange Program…)</li>
+      <li>All chats from this episode (Mia, Exchange Program, Rachel…)</li>
       <li>Phrases, items, achievements, memories and places from this episode</li>
     </ul>
+    ${ep.later && ep.later().length ? `<p class="warn">${escHTML(ep.later().join(', '))} builds on this episode, so it is reset too. · Наступні епізоди теж буде скинуто.</p>` : ''}
     <p class="keep">✓ Your journal stays. · Щоденник залишиться.</p>
     <div class="reset-btns">
       <button class="btn-plain" data-reset-cancel>Cancel</button>
@@ -1688,13 +1691,30 @@ function init(){
 
 // Called by the auth-gate script in <head> once it confirms a logged-in
 // Supabase session. This is now the only way the app starts.
+/* The student's first name, if the course platform stores one in the
+   Supabase user metadata (first_name / given_name / name / full_name).
+   Episodes use it in dialogue ("It's under Oksana."); without it they use
+   neutral lines, so nothing breaks. Only plain Latin-letter names are used —
+   a hotel booking would be in Latin letters, like the passport. */
+function playerFirstName(user){
+  const m = (user && user.user_metadata) || {};
+  const raw = m.first_name || m.firstName || m.given_name || m.name || m.full_name || m.display_name || '';
+  const first = String(raw).trim().split(/\s+/)[0] || '';
+  return /^[A-Za-zÀ-ÿ'’-]{2,20}$/.test(first) ? first.charAt(0).toUpperCase() + first.slice(1) : null;
+}
+window.lilaPlayerName = () => (STUDENT && STUDENT.first) || null;
+
 function startCourse(user){
-  STUDENT = { id: user.id, name: user.email, preview: !!user.preview };
+  STUDENT = { id: user.id, name: user.email, first: playerFirstName(user), preview: !!user.preview };
   init();
   loadProgress().then(showResetNote, showResetNote);
 }
 </script>
-<!-- Season 1 · Episode 1 "Arrival" — story engine, scenes, mini-games -->
+<!-- Episode player shared by every episode (dialogue, phone, speaking, menus, saving) -->
+<script src="episodes/engine/lila-engine.js"></script>
+<!-- Season 1 · Episode 1 "Arrival" — scenes, art, airport mini-games -->
 <script src="episodes/episode-01/episode-01.js"></script>
+<!-- Season 1 · Episode 2 "First Night in LA" — scenes, art, hotel / diner interactions -->
+<script src="episodes/episode-02/episode-02.js"></script>
 </body>
 </html>
