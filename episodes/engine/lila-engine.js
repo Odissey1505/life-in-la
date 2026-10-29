@@ -54,6 +54,9 @@ const COMMON_SPEAKERS = {
   you: { name:'You', color:'#FF8A3D', icon:'🙂', voice:{ g:'any', pitch:1.05, rate:0.95, idx:2 } },
   mia: { name:'Mia', role:'Best friend · Ukraine', color:'#5AB6F9', voice:{ g:'f', pitch:1.22, rate:1.05, idx:1 } }
 };
+/* photo avatars (speaker / thread / person id -> image URL); the icon stays underneath as a fallback */
+const AVATARS = {};
+const avaImg = id => AVATARS[id] ? `<img class="ep1-ava-img" src="${AVATARS[id]}" alt="" draggable="false" onerror="this.remove()">` : '';
 const HIDE_HOTSPOTS = ['notify','phone','final','complete','cards','reward'];
 let D = null;                 // the episode that is open (or was opened last)
 function spk(who){
@@ -630,7 +633,7 @@ function head(who, kind){
   if(kind === 'narr')  return `<div class="ep1-head"><span class="ep1-who ep1-thought-label">🎬 Scene</span></div>`;
   if(kind === 'turn')  return `<div class="ep1-head"><span class="ep1-who ep1-turn">${who}</span></div>`;
   const sp = spk(who) || { name:who, color:'#999' };
-  return `<div class="ep1-head"><span class="ep1-ava" style="--c:${sp.color}${sp.dark ? ';color:#2a1a0a' : ''}" aria-hidden="true">${sp.icon || faceMini(sp.dark)}</span>
+  return `<div class="ep1-head"><span class="ep1-ava" style="--c:${sp.color}${sp.dark ? ';color:#2a1a0a' : ''}" aria-hidden="true">${sp.icon || faceMini(sp.dark)}${avaImg(who)}</span>
     <span class="ep1-who">${esc(sp.name)}</span>${sp.role ? `<span class="ep1-role">${esc(sp.role)}</span>` : ''}</div>`;
 }
 function lineHTML(text, vocab){
@@ -729,7 +732,7 @@ function setBg(key){
     else if(!shown){ shown = 'art'; show(sceneArt(key)); EP.stage.classList.remove('has-photo'); }
   });
 }
-function setCam(cam){ EP.bg.classList.remove('cam-wide','cam-push','cam-drift','cam-shake'); void EP.bg.offsetWidth; if(cam) EP.bg.classList.add('cam-' + cam); }
+function setCam(cam){ [EP.bg, EP.hot].forEach(el => { el.classList.remove('cam-wide','cam-push','cam-drift','cam-shake','cam-land'); void el.offsetWidth; if(cam) el.classList.add('cam-' + cam); }); }
 function bgAt(scene, nodeId){
   let bg = scene.bg, cam = null, night = false;
   for(const k of scene.order){ const n = scene.nodes[k]; if(k === nodeId) break; if(n.bg) bg = n.bg; if(n.cam) cam = n.cam; if(n.fx === 'nightfall') night = true; }
@@ -744,10 +747,20 @@ function hotPos(h){
   const layers = ph && EP.stage.classList.contains('has-photo') ? $$('.ep1-bglayer', EP.bg) : [];
   const box = layers.length && layers[layers.length - 1].querySelector('.ep1-pic-box');
   if(!box) return [h.x, h.y];
-  const b = box.getBoundingClientRect(), r = EP.hot.getBoundingClientRect();
+  const b = box.getBoundingClientRect(), r = EP.stage.getBoundingClientRect();
   if(!b.width || !r.width) return [h.x, h.y];
-  const x = (b.left + b.width * ph[0] / 100 - r.left) / r.width * 100;
-  const y = (b.top + b.height * ph[1] / 100 - r.top) / r.height * 100;
+  /* the spot on screen, with the camera's zoom taken out (the hotspot layer gets the same zoom) */
+  let px = b.left + b.width * ph[0] / 100, py = b.top + b.height * ph[1] / 100;
+  try {
+    const t = getComputedStyle(EP.bg).transform;
+    if(t && t !== 'none'){
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      const p = new DOMMatrix(t).inverse().transformPoint(new DOMPoint(px - cx, py - cy));
+      px = cx + p.x; py = cy + p.y;
+    }
+  } catch(e){}
+  const x = (px - r.left) / r.width * 100;
+  const y = (py - r.top) / r.height * 100;
   return [Math.min(95, Math.max(5, x)).toFixed(1), Math.min(86, Math.max(11, y)).toFixed(1)];
 }
 function renderHotspots(){
@@ -894,7 +907,7 @@ RENDER.end = function(node){ endScene(node.next); };
 RENDER.cards = function(node, id, tok){
   hideDlg();
   EP.cine.hidden = false; EP.cine.className = 'ep1-cine ep1-cine-open';
-  setCam('push'); EP.bg.classList.add('cam-land');
+  setCam('push'); [EP.bg, EP.hot].forEach(el => el.classList.add('cam-land'));
   EP.cine.innerHTML = `<div class="ep1-cards" aria-live="polite"></div><button type="button" class="ep1-skip" data-primary>Skip intro ▸</button>`;
   const box = EP.cine.querySelector('.ep1-cards');
   let done = false;
@@ -1375,7 +1388,7 @@ function openPhone(tid, scripted){
       <div class="ep1-ph-status"><span>${esc(EP.scene ? EP.scene.clock : '')}</span><span aria-hidden="true">●●● 📶 🔋</span></div>
       <div class="ep1-ph-head">
         ${scripted ? '' : `<button type="button" class="ep1-ph-ib" data-ph="list" aria-label="All chats">‹</button>`}
-        <span class="ep1-ph-ava" style="--c:${t.color}" aria-hidden="true">${t.icon || faceMini(t.dark)}${t.online ? '<i class="ep1-online"></i>' : ''}</span>
+        <span class="ep1-ph-ava" style="--c:${t.color}" aria-hidden="true">${t.icon || faceMini(t.dark)}${avaImg(t.id)}${t.online ? '<i class="ep1-online"></i>' : ''}</span>
         <div class="ep1-ph-who"><b>${esc(t.name)} ${t.flag && window.FLAGS ? window.FLAGS[t.flag] : ''}</b><small class="ep1-ph-sub">${esc(t.sub || 'online')}</small></div>
         ${scripted ? '' : `<button type="button" class="ep1-ph-ib" data-ph="close" aria-label="Close phone">✕</button>`}
       </div>
@@ -1414,7 +1427,7 @@ function browsePhone(){
     <div class="ep1-ph-status"><span>${esc(EP.scene ? EP.scene.clock : '')}</span><span aria-hidden="true">📶 🔋</span></div>
     <div class="ep1-ph-head"><div class="ep1-ph-who"><b>📱 Messages</b><small class="ep1-ph-sub">Your chats</small></div><button type="button" class="ep1-ph-ib" data-ph="close" aria-label="Close phone">✕</button></div>
     <div class="ep1-ph-body ep1-ph-list">${DATA.messages.map(m => `<button type="button" class="ep1-ph-thread" data-th="${esc(m.id)}">
-      <span class="ep1-ph-ava" style="--c:${m.color}" aria-hidden="true">${m.icon || faceMini(m.dark)}</span>
+      <span class="ep1-ph-ava" style="--c:${m.color}" aria-hidden="true">${m.icon || faceMini(m.dark)}${avaImg(m.id)}</span>
       <span class="ep1-ph-ti"><b>${esc(m.name)}</b><small>${esc(m.snippet || '')}</small></span>${m.unread ? `<span class="ep1-ph-un">${m.unread}</span>` : ''}</button>`).join('')}</div>
     <div class="ep1-ph-foot"><button type="button" class="ep1-btn ep1-btn-ghost" data-ph="close">Back to the story</button></div></div>`;
   EP.phone.querySelector('.ep1-ph').addEventListener('click', e => {
@@ -1910,6 +1923,7 @@ function register(def){
   Object.assign(PEOPLE_DEFS, def.people || {});
   Object.assign(THREAD_DEFS, def.threads || {});
   Object.assign(ACH_DEFS, def.achievements || {});
+  Object.assign(AVATARS, def.avatars || {});
   (def.locations || []).forEach(l => { if(!DATA.locations.some(x => x.id === l.id)) DATA.locations.push(Object.assign({}, l)); });
   if(def.onRegister) try { def.onRegister(); } catch(e){ console.warn(e); }
   EPISODES.push(def); EPISODES.sort((a, b) => a.n - b.n);
@@ -1937,7 +1951,7 @@ function register(def){
 }
 
 window.LilaEngine = {
-  register, open, close, has: id => !!BY_ID[id], current: () => D, episodes: () => EPISODES.slice(), isUnlocked, isDone,
+  register, open, close, has: id => !!BY_ID[id], current: () => D, avatar: id => AVATARS[id] || null, episodes: () => EPISODES.slice(), isUnlocked, isDone,
   api: {
     esc, $, $$, wordCount, isReduced, wait, fmtTime, SET, saveSettings, Sound, Voice, canRecord, makeRecorder, destroyRecorders,
     speakBox, talkBox, hintLadder, st, stOf, peekSt, save, flushSave, taskDone, ensureAch, unlockAch, addPhrase, hasPhrase, giveItem, itemInfo,

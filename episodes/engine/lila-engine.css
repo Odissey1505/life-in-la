@@ -30,10 +30,10 @@ body.ep1-open{ overflow:hidden !important; }
 .ep1-bglayer.on{ opacity:1; }
 .ep1-art, .ep1-photo{ position:absolute; inset:0; width:100%; height:100%; display:block; object-fit:cover; }
 .ep1-photo-soft{ background-size:cover; background-position:center 0%; filter:blur(3px) saturate(1.1) brightness(.85); transform:scale(1.12); transform-origin:50% 0; }  /* keeps the passport in that photo out of frame */
-.ep1-bg.cam-push{ transform:scale(1.12); transition:transform 9s cubic-bezier(.2,.6,.2,1); }
-.ep1-bg.cam-wide{ transform:scale(1.02); transition:transform 2.4s ease; }
-.ep1-bg.cam-drift{ animation:ep1Drift 30s ease-in-out infinite alternate; }
-.ep1-bg.cam-land{ animation:ep1Land 11s cubic-bezier(.25,.6,.25,1) forwards; }
+.ep1-bg.cam-push, .ep1-hot.cam-push{ transform:scale(1.12); transition:transform 9s cubic-bezier(.2,.6,.2,1); }
+.ep1-bg.cam-wide, .ep1-hot.cam-wide{ transform:scale(1.02); transition:transform 2.4s ease; }
+.ep1-bg.cam-drift, .ep1-hot.cam-drift{ animation:ep1Drift 30s ease-in-out infinite alternate; }
+.ep1-bg.cam-land, .ep1-hot.cam-land{ animation:ep1Land 11s cubic-bezier(.25,.6,.25,1) forwards; }
 @keyframes ep1Drift{ from{ transform:scale(1.06) translateX(-1.2%); } to{ transform:scale(1.08) translateX(1.2%); } }
 @keyframes ep1Land{ 0%{ transform:scale(1.24) translateY(3%); } 70%{ transform:scale(1.08) translateY(0); } 74%{ transform:scale(1.08) translateY(.5%); } 78%{ transform:scale(1.08) translateY(-.2%); } 100%{ transform:scale(1.06); } }
 .ep1-grade{ position:absolute; inset:0; pointer-events:none;
@@ -75,7 +75,9 @@ body.ep1-open{ overflow:hidden !important; }
 @keyframes ep1Buzz{ 0%,100%{ transform:rotate(0); } 20%{ transform:rotate(-14deg) translateX(-2px); } 40%{ transform:rotate(12deg) translateX(2px); } 60%{ transform:rotate(-8deg); } 80%{ transform:rotate(6deg); } }
 
 /* ---------- hotspots ---------- */
-.ep1-hot{ position:absolute; inset:0; z-index:5; pointer-events:none; transition:opacity .4s; }
+/* the hotspot layer moves with the camera, so a spot stays on its object */
+.ep1-hot{ position:absolute; inset:0; z-index:5; pointer-events:none; transform:scale(1.02); transition:opacity .4s, transform 2.4s ease; }
+.ep1-hot.cam-push{ transition:opacity .4s, transform 9s cubic-bezier(.2,.6,.2,1); }
 .ep1-hot.off{ opacity:0; }
 .ep1-hot.off .ep1-hs{ pointer-events:none; visibility:hidden; }
 .ep1-hs{ position:absolute; transform:translate(-50%,-50%); pointer-events:auto; border:none; background:none; padding:0; display:flex; align-items:center; gap:8px; }
@@ -94,7 +96,7 @@ body.ep1-open{ overflow:hidden !important; }
 .ep1-dialog.ep1-anim{ animation:ep1DlgIn .35s ease both; }
 @keyframes ep1DlgIn{ from{ opacity:0; transform:translate(-50%, 10px); } to{ opacity:1; transform:translate(-50%, 0); } }
 .ep1-head{ display:flex; align-items:center; gap:9px; margin-bottom:6px; }
-.ep1-ava{ width:30px; height:30px; border-radius:50%; background:var(--c); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; color:#1a1a1a; }
+.ep1-ava{ position:relative; width:30px; height:30px; border-radius:50%; background:var(--c); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; color:#1a1a1a; }
 .ep1-ava svg{ width:20px; height:20px; }
 .ep1-who{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:16px; }
 .ep1-role{ font-size:11.5px; opacity:.6; padding:2px 8px; border-radius:999px; background:rgba(255,255,255,.08); }
@@ -258,7 +260,8 @@ body.ep1-open{ overflow:hidden !important; }
 .ep1-ph-ib{ border:none; background:rgba(36,52,71,.08); width:32px; height:32px; border-radius:50%; font-size:16px; color:#243447 !important; }
 .ep1-ph-ava{ position:relative; width:38px; height:38px; border-radius:50%; background:var(--c); display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; }
 .ep1-ph-ava svg{ width:24px; height:24px; }
-.ep1-online{ position:absolute; right:-1px; bottom:-1px; width:11px; height:11px; border-radius:50%; background:#3ecf6b; border:2px solid #FFFBF6; }
+.ep1-ava-img{ position:absolute; inset:0; width:100%; height:100%; border-radius:50%; object-fit:cover; display:block; }
+.ep1-online{ z-index:1; position:absolute; right:-1px; bottom:-1px; width:11px; height:11px; border-radius:50%; background:#3ecf6b; border:2px solid #FFFBF6; }
 .ep1-ph-who{ flex:1; min-width:0; display:flex; flex-direction:column; }
 .ep1-ph-who b{ font-family:'Baloo 2', sans-serif; font-size:16px; display:flex; align-items:center; gap:5px; }
 .ep1-ph-sub{ font-size:12px; color:#3ecf6b; font-weight:700; }
