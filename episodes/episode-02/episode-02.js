@@ -119,7 +119,7 @@ const SPEAKERS = {
   daniel: { name:'Daniel', role:'Reception · Palm Court Hotel', color:'#5AB6F9', voice:{ g:'m', pitch:1.02, rate:1.0, idx:1 } },
   sophie: { name:'Sophie', role:'Moonlight Diner', color:'#ff8fb1', voice:{ g:'f', pitch:1.12, rate:1.05, idx:0 } },
   jake:   { name:'Jake', role:'Local teen', color:'#6DBB75', voice:{ g:'m', pitch:1.14, rate:1.06, idx:2 } },
-  local:  { name:'Local', role:'Out walking her dog', color:'#9B8ECF', voice:{ g:'f', pitch:0.94, rate:0.96, idx:2 } },
+  local:  { name:'Local', role:'Out walking his dog', color:'#9B8ECF', voice:{ g:'m', pitch:0.9, rate:0.94, idx:0 } },
   rachel: { name:'Rachel Miller', role:'Host family', color:'#F3E5C8', dark:true, voice:{ g:'f', pitch:1.0, rate:0.95, idx:1 } }
 };
 
@@ -136,12 +136,12 @@ const SCENES = [
 { id:'s1', n:1, title:'The Check-In Problem', emoji:'🏨', objective:'Save your reservation',
   bg:'exterior', ambience:'lobby', clock:'9:15 PM',
   hotspots:[
-    { id:'s1-door', x:52, y:46, icon:'🚪', label:'Read the door sign', bgs:['hall'],
+    { id:'s1-door', x:52, y:46, ph:[80.7, 22], icon:'🚪', label:'Read the door sign', bgs:['hall'],
       text:"412. The light on the lock blinks red. It was green an hour ago!", ua:"412. Лампочка на замку блимає червоним. А годину тому була зелена!" },
-    { id:'s1-bell', x:62, y:58, icon:'🛎️', label:'Ring the bell', bgs:['lobby'],
+    { id:'s1-bell', x:62, y:58, ph:[70, 64], icon:'🛎️', label:'Ring the bell', bgs:['lobby'],
       text:"Ding! Daniel looks up and smiles. Okay — maybe don't ring it twice. 😅", ua:"Дзинь! Деніел підводить очі й усміхається. Добре — мабуть, двічі не варто. 😅" },
-    { id:'s1-rack', x:16, y:52, icon:'🗺️', label:'Look at the brochures', bgs:['lobby'],
-      text:"“Things to do in LA”: Santa Monica Pier, Griffith Observatory, the Hollywood Walk of Fame… So much to see.", ua:"«Що робити в Лос-Анджелесі»: пірс Санта-Моніки, обсерваторія Гріффіта, Голлівудська алея слави… Стільки всього!" }
+    { id:'s1-rack', x:16, y:52, ph:[16, 59], icon:'🪧', label:'Read the little sign', bgs:['lobby'],
+      text:"“A warm welcome to Palm Court.” Next to it, a pile of brochures: Santa Monica Pier, Griffith Observatory, the Hollywood Walk of Fame… So much to see.", ua:"«Тепло вітаємо в Palm Court». Поруч — купка буклетів: пірс Санта-Моніки, обсерваторія Гріффіта, Голлівудська алея слави… Стільки всього!" }
   ],
   nodes:{
     open:  { type:'cards', cards:['LOS ANGELES · 9:15 PM','PALM COURT HOTEL','DAY 1 · NIGHT'],
@@ -225,11 +225,11 @@ const SCENES = [
 { id:'s2', n:2, title:'Room 308', emoji:'🔑', objective:'Get online',
   bg:'room', ambience:'room', clock:'9:32 PM',
   hotspots:[
-    { id:'s2-window', x:66, y:36, icon:'🌆', label:'Look out of the window', bgs:['room'],
+    { id:'s2-window', x:66, y:36, ph:[69, 36], icon:'🌆', label:'Look out of the window', bgs:['room'],
       text:"Palm trees, red tail lights, and a sky that's still a little pink. LA, you're showing off.", ua:"Пальми, червоні вогні машин і ще трохи рожеве небо. Лос-Анджелесе, ти хизуєшся." },
-    { id:'s2-case', x:24, y:74, icon:'🧳', label:'Check your suitcase', bgs:['room'],
+    { id:'s2-case', x:24, y:74, ph:[28, 62], icon:'🧳', label:'Check your suitcase', bgs:['room'],
       text:"Black, medium-sized, orange ribbon. Still mine. Thank you, Daniel. 😅", ua:"Чорна, середня, помаранчева стрічка. Досі моя. Дякую, Деніеле. 😅" },
-    { id:'s2-sleeve', x:82, y:66, icon:'💳', label:'Look at the key card sleeve', bgs:['room'],
+    { id:'s2-sleeve', x:82, y:66, ph:[87.5, 67], icon:'💳', label:'Look at the key card sleeve', bgs:['room'],
       when: f => !f.wifiOn,
       text:"A little paper sleeve for your key card: “Palm Court Hotel · Room 308 · Welcome!” There's more printed inside.", ua:"Маленький паперовий конвертик для картки: «Палм Корт · номер 308 · Ласкаво просимо!» Усередині ще щось надруковано." }
   ],
@@ -346,16 +346,16 @@ const SCENES = [
 { id:'s4', n:4, title:'Into the City', emoji:'🌴', objective:'Find the diner',
   bg:'street', ambience:'street', clock:'9:58 PM',
   hotspots:[
-    { id:'s4-truck', x:80, y:62, icon:'🌮', label:'Look at the taco truck', bgs:['street'],
-      text:"A taco truck with a line of six people at 10 PM. Noted for tomorrow.", ua:"Фудтрак із тако, а в черзі шестеро людей о десятій вечора. Записую на завтра." },
-    { id:'s4-palm', x:22, y:19, icon:'🌴', label:'Look up', bgs:['street'],
+    { id:'s4-truck', x:16, y:37, ph:[13, 17], icon:'🌮', label:'Look at the taco place', bgs:['street'],
+      text:"A neon taco the size of a car — and the place is still busy at 10 PM. Noted for tomorrow.", ua:"Неоновий тако завбільшки з машину — і о десятій вечора там досі повно людей. Записую на завтра." },
+    { id:'s4-palm', x:22, y:19, ph:[40, 12], icon:'🌴', label:'Look up', bgs:['street'],
       text:"The palm trees are SO tall. They look like they're touching the stars.", ua:"Пальми ТАКІ високі. Здається, вони торкаються зірок." }
   ],
   nodes:{
     open:  narr("Los Angeles looks completely different at night. The streets are glowing, music is playing somewhere nearby, and you're ready to explore.",
                 "Уночі Лос-Анджелес зовсім інший. Вулиці сяють, десь поруч грає музика — і ти готовий(-а) досліджувати.", { cam:'drift' }),
     which: think("Okay. Food. But which way?", "Так. Їжа. Але куди йти?"),
-    ask:   { type:'choice', speak:true, prompt:"A woman is walking her dog. Ask her!", ua:"Жінка вигулює собаку. Запитай її!", options:[
+    ask:   { type:'choice', speak:true, prompt:"A man is walking his dog. Ask him!", ua:"Чоловік вигулює собаку. Запитай його!", options:[
              { text:"Excuse me, is there a diner around here?", ua:"Перепрошую, тут поблизу є закусочна?" },
              { text:"Excuse me — is there a place nearby where I can get some food?", ua:"Перепрошую — тут є якесь місце поблизу, де можна поїсти?", vocab:['place-nearby'] } ] },
     l1:    say('local', "Yeah! There's a great one just around the corner.", "Так! Тут за рогом є чудова.", { vocab:['around-corner'] }),
@@ -367,14 +367,14 @@ const SCENES = [
              ua:"Ідіть прямо, на світлофорі поверніть ліворуч — і побачите її поруч із книгарнею.",
              question:"Where do you turn left?", qua:"Де треба повернути ліворуч?",
              options:[ { text:'At the traffic lights', correct:true }, { text:'At the bookstore' }, { text:'At the hotel' } ],
-             hints:[ "Listen to the middle of her sentence: “turn left at the…”", "Traffic lights = red, yellow, green. 🚦", "Ліворуч треба повернути на світлофорі." ] },
+             hints:[ "Listen to the middle of his sentence: “turn left at the…”", "Traffic lights = red, yellow, green. 🚦", "Ліворуч треба повернути на світлофорі." ] },
     far:   { type:'choice', speak:true, prompt:"One more question:", ua:"Ще одне запитання:", options:[
              { text:"Thanks! Is it far?", ua:"Дякую! Це далеко?" },
              { text:"Thank you! Is it far from here?", ua:"Дякую! Це далеко звідси?" } ] },
     l2:    say('local', "Not at all. About five minutes. You can't miss the neon sign.", "Зовсім ні. Хвилин п'ять. Неонову вивіску ви точно не пропустите.", { vocab:['cant-miss'] }),
-    dog:   narr("Her dog sniffs your shoes, decides you're okay, and off they go.", "Її пес обнюхує твої кросівки, вирішує, що ти нормальний(-а), — і вони йдуть далі."),
+    dog:   narr("His dog sniffs your shoes, decides you're okay, and off they go.", "Його пес обнюхує твої кросівки, вирішує, що ти нормальний(-а), — і вони йдуть далі."),
     map:   { type:'hood', key:'s4_map' },
-    neon:  think("A pink-and-blue neon sign: MOONLIGHT DINER. She was right — you can't miss it.", "Рожево-блакитна неонова вивіска: MOONLIGHT DINER. Вона мала рацію — не пропустиш.", { bg:'dinerOut', vocab:['cant-miss'] }),
+    neon:  think("A pink-and-blue neon sign: MOONLIGHT DINER. He was right — you can't miss it.", "Рожево-блакитна неонова вивіска: MOONLIGHT DINER. Він мав рацію — не пропустиш.", { bg:'dinerOut', vocab:['cant-miss'] }),
     pin:   { type:'act', run:'unlockDiner' },
     end:   { type:'end', next:'s5' }
   } },
@@ -383,11 +383,11 @@ const SCENES = [
 { id:'s5', n:5, title:'The Late-Night Order', emoji:'🍔', objective:'Order your dinner',
   bg:'diner', ambience:'diner', clock:'10:10 PM',
   hotspots:[
-    { id:'s5-juke', x:12, y:50, icon:'🎵', label:'Check out the jukebox', bgs:['diner'],
+    { id:'s5-juke', x:12, y:50, ph:[8, 50], icon:'🎵', label:'Check out the jukebox', bgs:['diner'],
       text:"A real jukebox! The songs are older than your parents. You love it.", ua:"Справжній музичний автомат! Пісні старші за твоїх батьків. Тобі подобається." },
-    { id:'s5-pie', x:72, y:44, icon:'🥧', label:'Look at the pies', bgs:['diner'],
-      text:"Cherry pie. Apple pie. Something called “Mile-High Chocolate.” Respect.", ua:"Вишневий пиріг. Яблучний пиріг. І щось під назвою «Шоколадна гора». Повага." },
-    { id:'s5-wall', x:88, y:28, icon:'📷', label:'Look at the photo wall', bgs:['diner'],
+    { id:'s5-pie', x:72, y:44, ph:[24, 45], icon:'🥧', label:'Look at the pies', bgs:['diner'],
+      text:"A pie under a glass dome. The board says apple and blueberry — and the shakes are five dollars. Respect.", ua:"Пиріг під скляним ковпаком. На дошці — яблучний і чорничний, а молочні коктейлі по п'ять доларів. Повага." },
+    { id:'s5-wall', x:88, y:28, ph:[6, 15], icon:'📷', label:'Look at the photo wall', bgs:['diner'],
       text:"Photos of happy customers. One says: “Westside Hawks — basketball champs!” A tall kid in the middle is holding a trophy.", ua:"Фото задоволених відвідувачів. На одному напис: «Westside Hawks — чемпіони з баскетболу!» Високий хлопець посередині тримає кубок." }
   ],
   nodes:{
@@ -445,7 +445,7 @@ const SCENES = [
 { id:'s6', n:6, title:'The Unexpected Connection', emoji:'👀', objective:'Get to know Jake',
   bg:'jake', ambience:'diner', clock:'10:28 PM',
   hotspots:[
-    { id:'s6-wall', x:88, y:28, icon:'📷', label:'Look at the photo wall', bgs:['jake'],
+    { id:'s6-wall', x:88, y:28, ph:[8, 14], icon:'📷', label:'Look at the photo wall', bgs:['jake'],
       text:"“Westside Hawks — basketball champs!” Wait… is that Jake in the back row?", ua:"«Westside Hawks — чемпіони з баскетболу!» Стоп… це Джейк у задньому ряду?" }
   ],
   nodes:{
@@ -499,7 +499,7 @@ const SCENES = [
 { id:'s7', n:7, title:'A Message from the Millers', emoji:'🏡', objective:'Reply to Rachel',
   bg:'roomNight', ambience:'room', clock:'10:45 PM',
   hotspots:[
-    { id:'s7-window', x:66, y:36, icon:'🌃', label:'Look at the city', bgs:['roomNight'],
+    { id:'s7-window', x:66, y:36, ph:[72, 35], icon:'🌃', label:'Look at the city', bgs:['roomNight'],
       text:"Somewhere out there is a house with a family that's waiting for me. Wild.", ua:"Десь там є будинок, де на мене чекає родина. Неймовірно." }
   ],
   nodes:{
@@ -560,27 +560,40 @@ const SCENES = [
     done:  { type:'complete' }
   } }
 ];
-
 /* =========================================================================
    SCENE ART
    -------------------------------------------------------------------------
-   Real photos go in episodes/episode-02/photos/ (names below, 16:9 webp,
-   1672×941 like Episode 1 — see photos/ASSET-PROMPTS.md). Until a photo
-   exists, the drawn SVG scene below is shown, with its own animations:
-   flickering neon, car light streaks, twinkling city lights, a blinking
-   key-card lock, the bedside lamp and the phone glowing in the dark.
-   Characters keep the same look in every scene (same colours and outfit).
+   The scenes use the photos in episodes/episode-02/photos/ (16:9 webp,
+   1672×941 like Episode 1 — see photos/ASSET-PROMPTS.md). If a photo is
+   missing or slow, the drawn SVG scene below is shown instead, so the
+   episode always works. Sophie is a separate see-through layer on top of
+   the diner photo (like the people in Episode 1). The lock, the key card,
+   Mia's video call and the neighbourhood map have photos too, each with
+   the drawn version as its fallback.
 
-   ▶ When you upload the photos, set USE_PHOTOS to true. While it is false
-     the episode never asks for missing files (no 404s in the console).
+   ▶ Set USE_PHOTOS to false to play with the drawn scenes only.
    ========================================================================= */
-const USE_PHOTOS = false;
+const USE_PHOTOS = true;
 const PHOTO_BASE = BASE + 'photos/';
 const PHOTOS = {
   exterior:'s1-hotel-exterior.webp', hall:'s1-hotel-corridor.webp', lobby:'s1-hotel-lobby.webp',
   room:'s2-room-308.webp', roomNight:'s7-room-308-night.webp', street:'s4-street-night.webp',
   dinerOut:'s4-diner-exterior.webp', diner:'s5-diner-interior.webp', jake:'s6-diner-jake.webp', night:'s8-room-dark.webp'
 };
+/* photos used inside the mini-games (fetched together with the scene they belong to) */
+const PIC = { lock:'s1-lock-412', card:'s2-key-card-308', call:'s3-mia-video-call', map:'s4-map-neighbourhood', sophie:'s5-sophie' };
+const PIC_URL = k => PHOTO_BASE + PIC[k] + '.webp';
+const PHOTO_EXTRAS = { hall:[PIC.lock], room:[PIC.card, PIC.call], street:[PIC.map], diner:[PIC.sophie] };
+const PH_IMG = (n, cls = '', style = '') =>
+  `<img class="ep1-pic${cls ? ' ' + cls : ''}"${style ? ` style="${style}"` : ''} src="${PHOTO_BASE + n}.webp" alt="" draggable="false" decoding="async" onerror="this.remove()">`;
+/* origin = bottom-centre of the person in the frame, in % */
+const PH_FIG = (n, ox, oy, delay = 0) => PH_IMG(n, 'ep1-pic-fig', `transform-origin:${ox}% ${oy}%;animation-delay:${delay}s`);
+const PHOTO_LAYERS = {
+  diner: () => PH_IMG('s5-diner-interior') + PH_FIG(PIC.sophie, 77.15, 100)
+};
+/* faces for the dialogue, the phone and the People cards */
+const AVATAR = n => PHOTO_BASE + 'avatars/' + n + '.webp';
+const AVATARS = USE_PHOTOS ? { mia:AVATAR('mia'), jake:AVATAR('jake'), sophie:AVATAR('sophie'), 'sophie-m':AVATAR('sophie'), daniel:AVATAR('daniel') } : {};
 
 const STARS = (r, n, y1) => { let s = ''; for(let i = 0; i < n; i++) s += `<circle class="${i % 3 ? '' : 'ep2-star'}" cx="${(r() * 1600).toFixed(0)}" cy="${(r() * y1).toFixed(0)}" r="${(0.6 + r() * 1.4).toFixed(1)}" fill="#fff" opacity="${(0.3 + r() * 0.6).toFixed(2)}" style="--d:${(2 + r() * 3).toFixed(1)}s"/>`; return s; };
 const VIG = u => `<radialGradient id="${u}vig" cx="50%" cy="50%" r="75%"><stop offset="55%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity=".55"/></radialGradient>`;
@@ -708,7 +721,7 @@ const ART = {
       rad(`${u}lamp`, [[0,'#ffcf8a',night ? 0.62 : 0.5],[1,'#ffcf8a',0]]) + lin(`${u}bed`, [[0,'#efe4d4'],[1,'#a8977f']]) + VIG(u));
   },
   roomNight(u){ return ART.room(u, true); },
-  /* Scene 4: the street at night — palms, neon, cars, the woman with her dog */
+  /* Scene 4: the street at night — palms, neon, cars, the man with his dog */
   street(u){
     const r = rng(241);
     const bldL = `<polygon points="0,90 520,250 520,700 0,860" fill="#221a33"/>`, bldR = `<polygon points="1600,60 1080,240 1080,700 1600,880" fill="#1e1830"/>`;
@@ -815,7 +828,7 @@ RENDER.lock = function(node, id, tok){
   let taps = 0;
   const g = showGame('g-lock');
   g.innerHTML = `<div class="ep2-lock" aria-live="polite">
-      <div class="ep2-lock-plate"><div class="ep2-lock-num">412</div><div class="ep2-lock-reader"><span class="ep2-lock-led"></span><span class="ep2-lock-slot"></span></div></div>
+      <div class="ep2-lock-plate${USE_PHOTOS ? ' has-img' : ''}">${USE_PHOTOS ? `<img class="ep2-lock-img" src="${PIC_URL('lock')}" alt="Room 412 key card lock" draggable="false" onerror="this.parentNode.classList.remove('has-img');this.remove()">` : ''}<div class="ep2-lock-num">412</div><div class="ep2-lock-reader"><span class="ep2-lock-led"></span><span class="ep2-lock-slot"></span></div></div>
       <button type="button" class="ep1-btn ep1-btn-hot ep2-lock-tap" data-tap>💳 Tap your key card</button>
       <div class="ep2-lock-msg"></div></div>`;
   const led = g.querySelector('.ep2-lock-led'), msg = g.querySelector('.ep2-lock-msg');
@@ -909,7 +922,7 @@ RENDER.keycard = function(node, id, tok){
   function draw(){
     g.innerHTML = `<div class="ep2-sleeve-wrap">
       <div class="ep2-sleeve ${open ? 'open' : ''}" aria-live="polite">
-        <div class="ep2-sleeve-front"><div class="ep2-sleeve-logo">🌴 PALM COURT HOTEL</div><div class="ep2-sleeve-room">Room <b>308</b></div><div class="ep2-sleeve-w">Welcome to Los Angeles!</div></div>
+        <div class="ep2-sleeve-front${USE_PHOTOS ? ' has-img' : ''}">${USE_PHOTOS ? `<img class="ep2-sleeve-img" src="${PIC_URL('card')}" alt="Palm Court Hotel key card, Room 308" draggable="false" onerror="this.parentNode.classList.remove('has-img');this.remove()">` : ''}<div class="ep2-sleeve-logo">🌴 PALM COURT HOTEL</div><div class="ep2-sleeve-room">Room <b>308</b></div><div class="ep2-sleeve-w">Welcome to Los Angeles!</div></div>
         <div class="ep2-sleeve-in">
           <div class="ep2-sleeve-row"><span>📶 Wi-Fi network</span><b>PalmCourt_Guest</b></div>
           <div class="ep2-sleeve-row"><span>🔑 Password</span><b class="ep2-pass">palmtree308</b></div>
@@ -944,6 +957,8 @@ RENDER.keycard = function(node, id, tok){
 };
 
 /* ---------- Scene 3: video call with Mia ---------- */
+const MIA_PHOTO = () => USE_PHOTOS ? `<img class="ep2-mia-img" src="${PIC_URL('call')}" alt="" draggable="false" onerror="this.parentNode.classList.remove('has-img');this.remove()">` : '';
+const MIA_FACE = () => USE_PHOTOS ? `<img class="ep2-mia-img" src="${AVATARS.mia}" alt="" draggable="false" onerror="this.parentNode.classList.remove('has-img');this.remove()">` : '';
 const MIA_TILE = () => `<svg viewBox="0 0 400 300" class="ep2-mia-svg" aria-hidden="true">
   <defs><linearGradient id="ep2miaBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3f6a"/><stop offset="1" stop-color="#1d2038"/></linearGradient>
   <radialGradient id="ep2miaLamp"><stop offset="0" stop-color="#ffd99a" stop-opacity=".7"/><stop offset="1" stop-color="#ffd99a" stop-opacity="0"/></radialGradient></defs>
@@ -956,11 +971,11 @@ function callView(incoming){
   const g = showGame('g-call');
   g.innerHTML = incoming
     ? `<div class="ep2-call incoming" role="dialog" aria-label="Incoming video call from Mia">
-        <div class="ep2-call-ava">${MIA_TILE()}</div><div class="ep2-call-name">Mia 💙</div><div class="ep2-call-sub">FaceTime video…</div>
+        <div class="ep2-call-ava${USE_PHOTOS ? ' has-img' : ''}">${MIA_TILE()}${MIA_FACE()}</div><div class="ep2-call-name">Mia 💙</div><div class="ep2-call-sub">FaceTime video…</div>
         <div class="ep2-call-btns"><button type="button" class="ep2-cbtn no" data-call="decline" aria-label="Decline">✕<small>Decline</small></button>
         <button type="button" class="ep2-cbtn yes" data-call="accept" aria-label="Accept">📹<small>Accept</small></button></div></div>`
     : `<div class="ep2-call live" aria-label="Video call with Mia">
-        <div class="ep2-call-video">${MIA_TILE()}<div class="ep2-call-tag">Mia 💙 <span class="ep2-call-time">00:00</span></div><div class="ep2-call-self" aria-hidden="true"><span>You</span></div></div></div>`;
+        <div class="ep2-call-video${USE_PHOTOS ? ' has-img' : ''}">${MIA_TILE()}${MIA_PHOTO()}<div class="ep2-call-tag">Mia 💙 <span class="ep2-call-time">00:00</span></div><div class="ep2-call-self" aria-hidden="true"><span>You</span></div></div></div>`;
   return g;
 }
 let callTimer = null, ringTimer = null;
@@ -1052,16 +1067,35 @@ const HOOD = {
     mart:   ["🏪 24/7 Mart", "Open all night. Chargers, snacks, sunscreen, flip-flops… and a very relaxed cat.", "Працює всю ніч. Зарядки, снеки, сонцезахисний крем, шльопанці… і дуже спокійний кіт."]
   }
 };
+/* the aerial photo map is used once it has loaded; until then (or if it is missing) the drawn map */
+let MAP_PHOTO = USE_PHOTOS ? null : false;
+function ensureMapPhoto(then){
+  if(MAP_PHOTO !== null) return;
+  const im = new Image();
+  im.onload = () => { MAP_PHOTO = true; then(); };
+  im.onerror = () => { MAP_PHOTO = false; };
+  im.src = PIC_URL('map'); keepImage(im);
+  if(im.complete && im.naturalWidth) MAP_PHOTO = true;
+}
 function hoodSVG(path, at){
   const P = HOOD.P, [tx, ty] = P[at];
   const L = (a, b) => `<line x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[b][0]}" y2="${P[b][1]}"/>`;
+  const route = path.slice(1).map((p, i) => L(path[i], p)).join('');
+  if(MAP_PHOTO === true) return `<svg viewBox="0 0 800 560" class="ep2-hood-svg is-photo" role="img" aria-label="Neighbourhood map: Hotel, Diner, Books, Coffee and a 24/7 shop on Melrose, Genesee and Fairfax Avenue">
+    <defs><clipPath id="ep2hoodClip"><rect width="800" height="560" rx="22"/></clipPath></defs>
+    <image href="${PIC_URL('map')}" width="800" height="560" preserveAspectRatio="xMidYMid slice" clip-path="url(#ep2hoodClip)"/>
+    <g stroke="#0b0e1a" stroke-opacity=".55" stroke-width="12" stroke-linecap="round" fill="none">${route}</g>
+    <g class="ep2-hood-path" stroke="#FF8A3D" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 12" fill="none">${route}</g>
+    <g><rect x="30" y="528" width="350" height="22" rx="11" fill="#0b0e1a" opacity=".6"/><text x="44" y="543" ${FONT} font-size="12" fill="#c9d6ea">Game map — fictional businesses on real LA streets</text></g>
+    <g class="ep2-hood-you" style="transform:translate(${tx}px,${ty}px)"><circle r="22" fill="#FF8A3D" opacity=".35"/><circle r="12" fill="#FF8A3D" stroke="#fff" stroke-width="3"/></g>
+  </svg>`;
   return `<svg viewBox="0 0 800 560" class="ep2-hood-svg" role="img" aria-label="Neighbourhood map">
     <rect width="800" height="560" rx="22" fill="#141a2c"/>
     ${[[40,40,220,220],[340,40,140,220],[560,40,220,40],[40,340,220,180],[340,340,140,180],[560,340,220,180]].map(([x,y,w,h]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="#1d2540"/>`).join('')}
     <g stroke="#3a4a6e" stroke-width="34" stroke-linecap="round"><line x1="30" y1="300" x2="780" y2="300"/><line x1="300" y1="40" x2="300" y2="530"/><line x1="520" y1="40" x2="520" y2="530"/></g>
     <g stroke="#56678f" stroke-width="2" stroke-dasharray="10 12"><line x1="30" y1="300" x2="780" y2="300"/><line x1="520" y1="40" x2="520" y2="530"/></g>
-    <g ${FONT} font-weight="700" font-size="15" fill="#9fb6cf"><text x="680" y="290" text-anchor="middle">Melrose Ave</text><text x="290" y="520" text-anchor="end" transform="rotate(-90 290 520)">Genesee Ave</text><text x="536" y="520" transform="rotate(-90 536 520)">Fairfax Ave</text></g>
-    <g class="ep2-hood-path" stroke="#FF8A3D" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 12" fill="none">${path.slice(1).map((p, i) => L(path[i], p)).join('')}</g>
+    <g ${FONT} font-weight="700" font-size="15" fill="#9fb6cf"><text x="680" y="290" text-anchor="middle">Melrose Ave</text><text x="290" y="520" transform="rotate(-90 290 520)">Genesee Ave</text><text x="536" y="520" transform="rotate(-90 536 520)">Fairfax Ave</text></g>
+    <g class="ep2-hood-path" stroke="#FF8A3D" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 12" fill="none">${route}</g>
     <g><rect x="60" y="230" width="100" height="44" rx="8" fill="#7a2f4f"/><text x="110" y="258" text-anchor="middle" ${FONT} font-size="15" font-weight="800" fill="#ffd0e4">🏨 Hotel</text></g>
     <g><rect x="430" y="70" width="80" height="40" rx="8" fill="#a8222f"/><text x="470" y="96" text-anchor="middle" ${FONT} font-size="13" font-weight="800" fill="#ffe0e6">🍔 Diner</text>
        <rect x="530" y="70" width="80" height="40" rx="8" fill="#3a4a8a"/><text x="570" y="96" text-anchor="middle" ${FONT} font-size="13" font-weight="800" fill="#dfe6ff">📚 Books</text></g>
@@ -1093,6 +1127,7 @@ RENDER.hood = function(node, id, tok){
     requestAnimationFrame(() => { const you = g.querySelector('.ep2-hood-you'); if(you){ const [x, y] = HOOD.P[here]; you.style.transform = `translate(${x}px,${y}px)`; } });
     const first = g.querySelector('[data-dir]:not([disabled])'); first && first.focus({ preventScroll:true });
   }
+  ensureMapPhoto(() => { if(tok === EP.token && !EP.game.hidden && g.querySelector('.ep2-hood-svg')) draw(); });
   g.onclick = e => {
     if(tok !== EP.token) return;
     const v = e.target.closest('[data-vocab]'); if(v){ vocabCard(v.dataset.vocab); return; }
@@ -1589,7 +1624,8 @@ E.register({
   },
   /* x / y in % of the Map of LA picture — just around the corner from the hotel pin */
   locations: [ { id:'diner', name:'Moonlight Diner', icon:'🍔', x:49.6, y:47.2, drawn:false, status:'locked', note:'Locked — keep the story going.' } ],
-  photoBase: PHOTO_BASE, photos: USE_PHOTOS ? PHOTOS : {}, art: sceneArt,
+  photoBase: PHOTO_BASE, photos: USE_PHOTOS ? PHOTOS : {}, photoExtras: USE_PHOTOS ? PHOTO_EXTRAS : {}, photoLayers: PHOTO_LAYERS,
+  avatars: AVATARS, art: sceneArt,
   hideHotspots:['lock','wifi','keycard','callstart','callend','talk','hood','menu','meal','jakeq','voicenote','selffix'],
   soundDesc:'Hotel, street and diner ambience, phone sounds',
   render: RENDER,

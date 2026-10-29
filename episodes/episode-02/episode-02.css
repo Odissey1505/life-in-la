@@ -207,3 +207,38 @@
   .ep1 .ep2-port{ display:inline; }
   .ep1 .ep2-land{ display:none; }
 }
+
+/* ---------- Photos inside the mini-games (each falls back to its drawing) ---------- */
+/* Scene 1: the lock on Room 412 */
+.ep2-lock-plate.has-img{ position:relative; width:210px; padding:0; aspect-ratio:560/802; display:block; overflow:hidden; background:#1e1510; }
+.ep2-lock-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+.ep2-lock-plate.has-img .ep2-lock-num, .ep2-lock-plate.has-img .ep2-lock-slot{ display:none; }
+.ep2-lock-plate.has-img .ep2-lock-reader{ position:static; width:auto; height:auto; background:none; box-shadow:none; display:block; }
+.ep2-lock-plate.has-img .ep2-lock-led{ position:absolute; left:49.1%; top:22.2%; width:8.5%; height:auto; aspect-ratio:1; transform:translate(-50%,-50%); background:transparent; box-shadow:none; }
+.ep2-lock-plate.has-img .ep2-lock-led.bad{ animation:ep2BadPh .9s steps(2, jump-none) 2; }
+@keyframes ep2BadPh{ 0%, 100%{ background:#ff3b3b; box-shadow:0 0 14px 4px rgba(255,59,59,.85); } 50%{ background:transparent; box-shadow:none; } }
+/* Scene 2: the key card */
+.ep2-sleeve-front.has-img{ padding:0; overflow:hidden; background:#2a1a1f; }
+.ep2-sleeve-front.has-img > :not(.ep2-sleeve-img){ display:none; }
+.ep2-sleeve-img{ width:100%; height:100%; object-fit:cover; display:block; }
+/* Scene 3: Mia's video call */
+.ep2-call-ava, .ep2-call-video{ position:relative; }
+.ep2-mia-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+.ep2-call-ava.has-img > svg, .ep2-call-video.has-img > svg{ visibility:hidden; }
+.ep2-call-video.has-img .ep2-mia-img{ animation:ep2PhTalk 4.5s ease-in-out infinite; transform-origin:50% 70%; }
+@keyframes ep2PhTalk{ 40%{ transform:scale(1.012) rotate(-.25deg); } 70%{ transform:scale(1.006) rotate(.2deg); } }
+.ep2-call-video.has-img .ep2-call-tag, .ep2-call-video.has-img .ep2-call-self{ z-index:1; }
+.ep2-call-video.has-img .ep2-call-self{ bottom:calc(13% + 10px); width:19%; }
+/* Scene 4: the aerial map */
+.ep2-hood-svg.is-photo{ background:#0b0e1a; }
+
+/* ---------- Photo backgrounds on tall screens: keep the important part in view ---------- */
+@container (max-aspect-ratio: 1/1){
+  .ep1-pic-box[data-ph="diner"]{ transform:translate(-74%,-50%); }
+  .ep1-pic-box[data-ph="street"]{ transform:translate(-40%,-50%); }
+  .ep1-pic-box:is([data-ph="room"],[data-ph="roomNight"]){ transform:translate(-60%,-50%); }
+  .ep1-pic-box[data-ph="hall"]{ transform:translate(-58%,-50%); }
+}
+@media (max-width: 720px){
+  .ep2-lock-plate.has-img{ width:170px; }
+}

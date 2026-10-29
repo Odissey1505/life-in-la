@@ -1,10 +1,14 @@
-# Episode 2 — First Night in LA · photo slots
+# Episode 2 — First Night in LA · photos
 
-Episode 2 plays with its own drawn (SVG) scenes, so **nothing here is required**.
-If you want photo-real backgrounds like Episode 1, put these files in this folder
-and set `USE_PHOTOS = true` near the top of the "SCENE ART" section in
-`episodes/episode-02/episode-02.js`. Any file that is missing simply falls back
-to the drawn scene.
+The photos in this folder are used by the episode (`USE_PHOTOS = true` near the top of
+the "SCENE ART" section in `episodes/episode-02/episode-02.js`). Any file that is missing
+falls back to the drawn (SVG) scene, so the episode always works. To replace a photo,
+keep the same file name.
+
+Extra files: `s1-lock-412.webp` (560×802), `s2-key-card-308.webp` (900×581),
+`s3-mia-video-call.webp` (1200×900), `s4-map-neighbourhood.webp` (1600×1120),
+`s5-sophie.webp` (Sophie on a see-through 1672×941 layer over the diner photo),
+`avatars/*.webp` (256×256 faces for dialogue, phone and People).
 
 Format: **16:9 WebP, 1672 × 941** (same as Episode 1), ~150–300 KB each.
 Keep the important part in the middle third — phones crop the sides.
