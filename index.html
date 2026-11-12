@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <link rel="stylesheet" href="episodes/engine/lila-engine.css">
 <link rel="stylesheet" href="episodes/episode-01/episode-01.css">
 <link rel="stylesheet" href="episodes/episode-02/episode-02.css">
+<link rel="stylesheet" href="episodes/episode-03/episode-03.css">
 <style>
   :root{
     --sunset-orange:#FF8A3D;
@@ -289,6 +290,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   .phrase-tag{font-size:10px; padding:2px 8px; border-radius:999px; background:rgba(255,138,61,0.25); color:var(--sunset-pink); font-weight:700;}
   .phrase-ua{font-size:13px; opacity:.8; margin-top:3px;}
   .phrase-ex{font-size:12.5px; font-style:italic; opacity:.65; margin-top:5px;}
+  .phrase-simple{font-size:12.5px; opacity:.85; margin-top:3px;}
+  .bp-filter{margin-top:-6px;} .bp-filter .tab-btn{padding:5px 12px; font-size:12px;}
   .speak-btn{background:none; border:none; color:var(--ocean-blue); font-size:16px; padding:2px;}
   .speak-btn:hover{color:var(--sunset-orange);}
 
@@ -785,7 +788,7 @@ function renderMessages(){
     <div class="panel-head"><h3>📱 Messages</h3><button class="see-all" id="msgSeeAll">See all ›</button></div>
     ${DATA.messages.map(m=>`
       <div class="msg-thread" data-thread="${m.id}">
-        <div class="thread-avatar" style="background:${m.color}; ${m.dark?'color:#2a1a0a;':''}">${faceSVG(m.dark)}${avaPhoto(m.id)}${m.online ? '<span class="online-dot"></span>' : ''}</div>
+        <div class="thread-avatar" style="background:${m.color}; ${m.dark?'color:#2a1a0a;':''}">${faceSVG(m.dark)}${avaPhoto(m.knownAs || m.id)}${m.online ? '<span class="online-dot"></span>' : ''}</div>
         <div class="thread-info">
           <div class="name">${escHTML(m.name)} ${m.flag ? FLAGS[m.flag] : ''}</div>
           <div class="snippet">${escHTML(m.snippet)}</div>
@@ -1061,16 +1064,30 @@ function renderJournal(){
     </div>`;
 }
 
-function renderBackpack(tab){
+/* which episode a Backpack phrase came from ('ep1', 'ep2', … or 'start' for the starter list) */
+function phraseEp(p){ return p.ep || (p.ep1 ? 'ep1' : 'start'); }
+let BP_FILTER = 'all';
+function renderBackpack(tab, filter){
   const active = tab || 'phrases';
-  const phrasesHtml = DATA.phrases.map(p=>`
+  if(filter) BP_FILTER = filter;
+  const groups = ['ep1','ep2','ep3','ep4','ep5','ep6','ep7','start'].filter(g => DATA.phrases.some(p => phraseEp(p) === g));
+  if(BP_FILTER !== 'all' && !groups.includes(BP_FILTER)) BP_FILTER = 'all';
+  const story = window.LilaStory ? LilaStory.PHRASES : {};
+  const shown = DATA.phrases.filter(p => BP_FILTER === 'all' || phraseEp(p) === BP_FILTER);
+  const chips = groups.length > 1 ? `<div class="tabs bp-filter" role="group" aria-label="Show phrases from">
+      ${['all'].concat(groups).map(g => `<button class="tab-btn ${BP_FILTER===g?'active':''}" data-bp-filter="${g}" aria-pressed="${BP_FILTER===g}">${g==='all' ? 'All' : g==='start' ? 'Starter' : 'Episode ' + g.slice(2)}</button>`).join('')}
+    </div>` : '';
+  const phrasesHtml = chips + shown.map(p=>{
+      const simple = p.id && story[p.id] ? story[p.id].simple : '';
+      return `
         <div class="phrase-card">
-          <div class="phrase-en">${p.en} <span class="phrase-tag">${p.tag}</span>
-            <button class="speak-btn" data-speak="${p.en}" title="Listen">🔊</button>
+          <div class="phrase-en">${escHTML(p.en)} ${p.tag ? `<span class="phrase-tag">${escHTML(p.tag)}</span>` : ''}
+            <button class="speak-btn" data-speak="${escHTML(p.en)}" title="Listen" aria-label="Listen: ${escHTML(p.en)}">🔊</button>
           </div>
-          <div class="phrase-ua">${p.ua}</div>
-          <div class="phrase-ex">${p.ex}</div>
-        </div>`).join('');
+          ${simple ? `<div class="phrase-simple">${escHTML(simple)}</div>` : ''}
+          <div class="phrase-ua">${escHTML(p.ua)}</div>
+          <div class="phrase-ex">${escHTML(p.ex)}</div>
+        </div>`; }).join('');
   const itemsHtml = `<div>${DATA.items.map(i=>{
     const info = (window.LilaStory && LilaStory.itemInfo(i)) || { icon:'🎫', desc:'' };
     return `<div class="item-row"><span class="ico">${info.icon}</span><div><b>${escHTML(i)}</b><small>${escHTML(info.desc)}</small></div></div>`;
@@ -1338,6 +1355,9 @@ function wireModalContent(type){
     modalContent.querySelectorAll('[data-bp-tab]').forEach(t=>{
       t.addEventListener('click', ()=>{ modalContent.innerHTML = renderBackpack(t.dataset.bpTab); wireModalContent('backpack'); });
     });
+    modalContent.querySelectorAll('[data-bp-filter]').forEach(t=>{
+      t.addEventListener('click', ()=>{ modalContent.innerHTML = renderBackpack('phrases', t.dataset.bpFilter); wireModalContent('backpack'); });
+    });
   }
   if(type === 'people'){
     modalContent.querySelectorAll('.person-card').forEach(card=>{
@@ -1525,10 +1545,16 @@ function snapshotProgress(){
     story: window.LilaStory ? LilaStory.collect() : null
   };
 }
+/* Day 1 is Saturday, August 17; the label follows the story day. */
+function dayLabelFor(n){
+  const d = new Date(Date.UTC(2024, 7, 16 + Math.max(1, n || 1)));   // a year where Aug 17 is a Saturday
+  return d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', timeZone:'UTC' });
+}
+window.setStoryDay = function(n){ DATA.day.number = Math.max(1, n | 0); DATA.day.dateLabel = dayLabelFor(DATA.day.number); };
 function applyProgress(p){
   if(!p) return;
   if(Array.isArray(p.journal)) DATA.journal = p.journal;
-  if(p.day) DATA.day.number = p.day;
+  if(p.day) setStoryDay(p.day);
   if(window.LilaStory) LilaStory.apply(p.story || null, p.chat || {});
   else {
     const mia = DATA.messages.find(m=>m.id==='mia');
@@ -1714,7 +1740,26 @@ window.lilaPlayerName = () => (STUDENT && STUDENT.first) || null;
 function startCourse(user){
   STUDENT = { id: user.id, name: user.email, first: playerFirstName(user), preview: !!user.preview };
   init();
-  loadProgress().then(showResetNote, showResetNote);
+  loadProgress().then(showResetNote, showResetNote).then(previewJump);
+}
+/* PREVIEW ONLY (?preview=1): jump straight into an episode, even a locked one,
+   e.g. index.html?preview=1&ep=3 or ?preview=1&ep=3&scene=5. Uses the preview
+   copy of progress in this browser — never a student's account. Real students
+   (no ?preview=1) always go through the normal episode locks. */
+function previewJump(){
+  if(!STUDENT || !STUDENT.preview || !window.LilaEngine) return;
+  const q = new URLSearchParams(location.search);
+  const n = parseInt(q.get('ep'), 10); if(!n) return;
+  const id = 'ep' + n;
+  if(!LilaEngine.has(id)){ showHomeToast(`Preview: Episode ${n} isn't installed.`); return; }
+  const sc = parseInt(q.get('scene'), 10);
+  const def = LilaEngine.episodes().find(e => e.id === id);
+  if(sc && def && def.scenes[sc - 1]){
+    DATA.episodes = DATA.episodes || {};
+    const s = DATA.episodes[id] = DATA.episodes[id] || {};
+    s.sceneId = def.scenes[sc - 1].id; s.nodeId = null;
+  }
+  LilaEngine.open(id);
 }
 </script>
 <!-- Episode player shared by every episode (dialogue, phone, speaking, menus, saving) -->
@@ -1723,5 +1768,7 @@ function startCourse(user){
 <script src="episodes/episode-01/episode-01.js"></script>
 <!-- Season 1 · Episode 2 "First Night in LA" — scenes, art, hotel / diner interactions -->
 <script src="episodes/episode-02/episode-02.js"></script>
+<!-- Season 1 · Episode 3 "New Home" — the Miller house, Alex, Buddy and a first family dinner -->
+<script src="episodes/episode-03/episode-03.js"></script>
 </body>
 </html>
