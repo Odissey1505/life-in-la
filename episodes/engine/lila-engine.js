@@ -226,6 +226,10 @@ const Sound = (function(){
       case 'street':   bed('lowpass', 650, 0.42); bed('bandpass', 1400, 0.04); every(4200, () => { if(Math.random() < 0.75) blip('swoosh'); }); break;
       case 'diner':    bed('bandpass', 700, 0.28); bed('lowpass', 220, 0.2); every(2600, () => { if(Math.random() < 0.45) blip('clink'); }); break;
       case 'night':    bed('lowpass', 140, 0.14); tone(196, 0.004); break;
+      case 'morning':  bed('lowpass', 520, 0.2); every(5200, () => { if(Math.random() < 0.6) blip('chirp'); }); every(7000, () => { if(Math.random() < 0.4) blip('swoosh'); }); break;
+      case 'home':     bed('lowpass', 200, 0.16); every(11000, () => { if(Math.random() < 0.35) blip('chirp'); }); break;
+      case 'yard':     bed('lowpass', 900, 0.16); bed('bandpass', 2600, 0.015); every(3100, () => { if(Math.random() < 0.7) blip('chirp'); }); break;
+      case 'dinner':   bed('lowpass', 240, 0.18); every(3400, () => { if(Math.random() < 0.4) blip('clink'); }); break;
       case 'hotel':    bed('lowpass', 260, 0.12);
         [220, 277.2, 329.6, 415.3].forEach((f, i) => { const o = tone(f, 0.008); const lfo = ctx.createOscillator(), lg = ctx.createGain(); lfo.frequency.value = 0.07 + i * 0.03; lg.gain.value = 0.006; lfo.connect(lg).connect(o.frequency); lfo.start(); L.nodes.push(lfo, lg); });
         break;
@@ -262,6 +266,11 @@ const Sound = (function(){
       case 'wifi':     [659.3, 880, 1174.7].forEach((f, i) => note(f, i * 0.09, 0.4, 0.09, 'triangle')); break;
       case 'ring':     for(let r = 0; r < 2; r++){ [0, 0.18].forEach(t => { note(784, r * 1.1 + t, 0.15, 0.1); note(988, r * 1.1 + t + 0.08, 0.15, 0.08); }); } break;
       case 'sent':     burst(0, 0.25, 0.12, 'bandpass', 2400, 900); break;
+      case 'chirp':    { const b = 2600 + Math.random() * 900; [0, 0.11, 0.2].forEach((t, i) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(b + i * 120, ctx.currentTime + t); o.frequency.exponentialRampToValueAtTime(b * 1.35, ctx.currentTime + t + 0.07); o.connect(g).connect(master); env(o, g, ctx.currentTime + t, 0.005, 0.08, 0.025); }); break; }
+      case 'knock':    [0, 0.22, 0.44].forEach(t => { burst(t, 0.07, 0.5, 'lowpass', 380); note(110, t, 0.1, 0.18, 'triangle'); }); break;
+      case 'steps':    [0, 0.42, 0.84, 1.26].forEach(t => { burst(t, 0.09, 0.32, 'lowpass', 260); note(70, t, 0.08, 0.12, 'triangle'); }); break;
+      case 'bark':     [0, 0.32].forEach(t => { burst(t, 0.13, 0.35, 'bandpass', 700); note(330, t, 0.12, 0.08, 'sawtooth'); }); break;
+      case 'door':     burst(0, 0.5, 0.18, 'bandpass', 500, 250); note(150, 0.35, 0.15, 0.15, 'triangle'); break;
       case 'mystery':  note(392, 0, 1.6, 0.07); note(466.2, 0.5, 1.6, 0.06); note(554.4, 1.0, 2.2, 0.05); break;
       case 'stomach': {
         const o = ctx.createOscillator(), g = ctx.createGain(), l = ctx.createOscillator(), lg = ctx.createGain(), fl = ctx.createBiquadFilter();
@@ -769,13 +778,20 @@ function renderHotspots(){
     <button type="button" class="ep1-hs ${st().explored.includes(h.id) ? 'seen' : ''} ${h.pulse && h.pulse(st().flags) ? 'hs-hot' : ''}" style="left:${hx}%;top:${hy}%" data-hot="${h.id}" aria-label="${esc(h.label)}">
       <span class="ep1-hs-dot" aria-hidden="true">${h.icon}</span><span class="ep1-hs-label">${esc(h.label)}</span></button>`; }).join('');
 }
+/* an optional close-up photo (or two) on top of a hotspot's text: h.img = 'url' or ['url', 'url'] */
+function hotspotPics(h){
+  const list = [].concat(h.img || []).filter(Boolean);
+  if(!list.length) return '';
+  return `<div class="ep1-hs-pics${list.length > 1 ? ' two' : ''}" aria-hidden="true">${list.map(src =>
+    `<img class="ep1-hs-pic" src="${esc(src)}" alt="" draggable="false" decoding="async" onerror="this.remove()">`).join('')}</div>`;
+}
 function openHotspot(hid){
   const h = (EP.scene.hotspots || []).find(x => x.id === hid); if(!h) return;
   const s = st(); if(!s.explored.includes(hid)){ s.explored.push(hid); save(); }
   if(h.onOpen && h.onOpen(h) === false){ renderHotspots(); return; }
   if(h.item){ const it = itemInfo(h.item) || { icon:'🎒', desc:'' };
     pop(`<div class="ep1-item-big">${it.icon}</div><div class="ep1-vcard-en">${esc(h.item)}</div><div class="ep1-vcard-simple">${esc(it.desc)}</div>`); }
-  else pop(`<div class="ep1-head"><span class="ep1-who ep1-thought-label">💭 ${esc(h.label)}</span></div>
+  else pop(`${hotspotPics(h)}<div class="ep1-head"><span class="ep1-who ep1-thought-label">💭 ${esc(h.label)}</span></div>
     <div class="ep1-text think">${esc(h.text)}</div>${h.ua ? `<div class="ep1-ua" ${SET.ua ? '' : 'hidden'}>${esc(h.ua)}</div><button type="button" class="ep1-tool" onclick="this.previousElementSibling.hidden=!this.previousElementSibling.hidden">UA</button>` : ''}`);
   renderHotspots();
 }
@@ -1388,7 +1404,7 @@ function openPhone(tid, scripted){
       <div class="ep1-ph-status"><span>${esc(EP.scene ? EP.scene.clock : '')}</span><span aria-hidden="true">●●● 📶 🔋</span></div>
       <div class="ep1-ph-head">
         ${scripted ? '' : `<button type="button" class="ep1-ph-ib" data-ph="list" aria-label="All chats">‹</button>`}
-        <span class="ep1-ph-ava" style="--c:${t.color}" aria-hidden="true">${t.icon || faceMini(t.dark)}${avaImg(t.id)}${t.online ? '<i class="ep1-online"></i>' : ''}</span>
+        <span class="ep1-ph-ava" style="--c:${t.color}" aria-hidden="true">${t.icon || faceMini(t.dark)}${avaImg(t.knownAs || t.id)}${t.online ? '<i class="ep1-online"></i>' : ''}</span>
         <div class="ep1-ph-who"><b>${esc(t.name)} ${t.flag && window.FLAGS ? window.FLAGS[t.flag] : ''}</b><small class="ep1-ph-sub">${esc(t.sub || 'online')}</small></div>
         ${scripted ? '' : `<button type="button" class="ep1-ph-ib" data-ph="close" aria-label="Close phone">✕</button>`}
       </div>
@@ -1427,7 +1443,7 @@ function browsePhone(){
     <div class="ep1-ph-status"><span>${esc(EP.scene ? EP.scene.clock : '')}</span><span aria-hidden="true">📶 🔋</span></div>
     <div class="ep1-ph-head"><div class="ep1-ph-who"><b>📱 Messages</b><small class="ep1-ph-sub">Your chats</small></div><button type="button" class="ep1-ph-ib" data-ph="close" aria-label="Close phone">✕</button></div>
     <div class="ep1-ph-body ep1-ph-list">${DATA.messages.map(m => `<button type="button" class="ep1-ph-thread" data-th="${esc(m.id)}">
-      <span class="ep1-ph-ava" style="--c:${m.color}" aria-hidden="true">${m.icon || faceMini(m.dark)}${avaImg(m.id)}</span>
+      <span class="ep1-ph-ava" style="--c:${m.color}" aria-hidden="true">${m.icon || faceMini(m.dark)}${avaImg(m.knownAs || m.id)}</span>
       <span class="ep1-ph-ti"><b>${esc(m.name)}</b><small>${esc(m.snippet || '')}</small></span>${m.unread ? `<span class="ep1-ph-un">${m.unread}</span>` : ''}</button>`).join('')}</div>
     <div class="ep1-ph-foot"><button type="button" class="ep1-btn ep1-btn-ghost" data-ph="close">Back to the story</button></div></div>`;
   EP.phone.querySelector('.ep1-ph').addEventListener('click', e => {
@@ -1620,6 +1636,7 @@ function pause(){
       <button type="button" class="ep1-btn" data-pm="log" ${EP.log.length ? '' : 'disabled'}>📜 Dialogue so far</button>
       <button type="button" class="ep1-btn" data-pm="settings">⚙️ Settings</button>
       <button type="button" class="ep1-btn ep1-btn-ghost" data-pm="scene" ${sc ? '' : 'disabled'}>↺ Restart this scene</button>
+      <button type="button" class="ep1-btn ep1-btn-ghost" data-pm="scenes">🎬 Go to a scene…</button>
       <button type="button" class="ep1-btn ep1-btn-ghost" data-pm="episode">⟲ Restart the episode</button>
       <button type="button" class="ep1-btn ep1-btn-ghost" data-pm="exit">🏠 Save &amp; go back to my room</button>
       ${typeof window.resetProgress === 'function' ? `<button type="button" class="ep1-btn ep1-btn-ghost ep1-btn-danger" data-pm="erase">🗑 Reset Episode ${D.n} (erase progress)</button>` : ''}
@@ -1629,6 +1646,7 @@ function pause(){
       if(a === 'resume') closeModalEp();
       if(a === 'settings') openSettings();
       if(a === 'log') openLog();
+      if(a === 'scenes') openScenes();
       if(a === 'exit'){ EP.paused = false; EP.modal.hidden = true; close(); }
       const back = () => { EP.paused = false; pause(); };
       if(a === 'scene') confirmBox('Restart this scene?', 'You go back to the start of this scene. Your rewards and saved phrases stay.', () => { EP.root.classList.remove('ep1-paused'); gotoScene(sc.id, null, { noCard:false }); }, back);
@@ -1637,6 +1655,24 @@ function pause(){
         "Everything from this episode is erased: your place in the story, choices, answers, all its chats, phrases, items, achievements and memories." + (laterWithProgress(D).length ? ` Episode ${laterWithProgress(D).map(e => e.n).join(', ')} builds on it, so it is reset too.` : '') + " Your journal stays. This can't be undone.",
         () => { Voice.stop(); Sound.stop(); window.resetProgress('episode', D.id); }, back,
         { ua:'Епізод почнеться з нуля, усі переписки скинуться. Щоденник залишиться.', yes:'Yes, reset it', danger:true });
+    } });
+}
+/* scenes the student has already reached (all of them once the episode is finished) */
+function reachedScenes(){
+  const s = st();
+  return D.scenes.filter(x => s.completed || s.completedScenes.includes(x.id) || (EP.scene && x.index <= EP.scene.index));
+}
+function openScenes(){
+  const ok = new Set(reachedScenes().map(x => x.id));
+  openModalEp(`<div class="ep1-eyebrow">Episode ${D.n} · ${esc(D.title)}</div><h3>🎬 Go to a scene</h3>
+    <div class="ep1-menu">${D.scenes.map(x => `<button type="button" class="ep1-btn ${EP.scene && EP.scene.id === x.id ? 'ep1-btn-hot' : 'ep1-btn-ghost'}" data-go="${x.id}" ${ok.has(x.id) ? '' : 'disabled title="Not reached yet"'}>${ok.has(x.id) ? '' : '🔒 '}${x.n}. ${x.emoji} ${esc(x.title)} <small style="opacity:.7">· ${esc(x.clock)}</small></button>`).join('')}</div>
+    <p class="ep1-mini">Scenes open as you reach them. Your rewards, phrases and messages stay.</p>
+    <div class="ep1-row"><span></span><button type="button" class="ep1-btn" data-back>‹ Back</button></div>`,
+    { onClick: e => {
+      if(e.target.closest('[data-back]')){ EP.paused = false; EP.modal.hidden = true; pause(); return; }
+      const b = e.target.closest('[data-go]'); if(!b || b.disabled) return;
+      EP.paused = false; EP.modal.hidden = true; EP.modal.innerHTML = ''; resumeAudio();
+      gotoScene(b.dataset.go, null);
     } });
 }
 function openLog(){
@@ -1828,6 +1864,21 @@ function previewHTML(){
     ${tz ? tz.html : '<p>More episodes are coming soon.</p>'}
     ${done.length ? `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">${done.map(e => `<button class="btn-solid" data-lila-replay="${e.id}">↺ Replay “${esc(e.title)}”</button>`).join('')}</div>` : ''}`;
 }
+/* a finished episode's card on the homepage: what it was, and a way back in */
+function doneHTML(id){
+  const e = BY_ID[id]; if(!e) return previewHTML();
+  const mem = e.memoryId && DATA.memories.find(m => m.id === e.memoryId && m.unlocked);
+  const img = mem && mem.imgKey && typeof ASSETS === 'object' ? ASSETS[mem.imgKey] : null;
+  return `<div class="modal-eyebrow">Your story · Episode ${e.n} ✓</div>
+    <div class="modal-title">${e.icon} ${esc(e.title)}</div>
+    ${img ? `<div class="polaroid" style="--r:-2deg; max-width:220px; margin:0 auto 14px;"><div class="photo" style="height:140px; background-image:url('${img}'); background-size:cover; background-position:center;"></div><div class="cap">${esc(mem.cap)}</div></div>` : ''}
+    <p class="muted" style="font-size:13.5px;">${esc(e.tagline || '')}</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+      <button class="btn-solid" data-lila-replay="${e.id}">↺ Replay Episode ${e.n}</button>
+      <button class="btn-plain" data-lila-open="memories">📸 Memories</button>
+      <button class="btn-plain" data-lila-open="backpack">🎒 Useful English</button>
+    </div>`;
+}
 const LilaStory = {
   collect(){
     return {
@@ -1870,7 +1921,7 @@ const LilaStory = {
   missionCard(){
     const t = targetEpisode();
     if(t){
-      if(inProgress(t)){ const sc = t.sceneById[peekSt(t.id).sceneId]; return { eyebrow:'Continue your story', title:t.title, desc:`Scene ${sc.n} of ${t.scenes.length} · ${sc.title}`, cta:'Continue', icon:t.icon }; }
+      if(inProgress(t)){ const sc = t.sceneById[peekSt(t.id).sceneId]; return { eyebrow:`Continue Episode ${t.n}`, title:t.title, desc:`Scene ${sc.n} of ${t.scenes.length} · ${sc.title}`, cta:'Continue', icon:t.icon }; }
       if(t.card) return t.card();
       return { eyebrow: t.n === 1 ? "Today's mission" : `New · Episode ${t.n}`, title:t.title, desc:t.tagline || '', cta:'Start', icon:t.icon };
     }
@@ -1887,19 +1938,21 @@ const LilaStory = {
     const e = EPISODES.find(x => x.storyId === id);
     if(e){
       const s = peekSt(e.id);
-      if(s && s.completed && !s.sceneId) return openModal('memories');
+      if(s && s.completed && !s.sceneId) return openModal('epDone', e.id);
       if(isUnlocked(e)) return open(e.id);
     }
     const tz = teaser();
     if(tz && tz.storyId === id) return openModal('epPreview');
     openModal('memories');
   },
-  renderModal(type){
+  renderModal(type, param){
     if(type === 'epPreview' || type === 'ep2preview') return previewHTML();
+    if(type === 'epDone') return doneHTML(param);
     return null;
   },
   wireModal(type){
-    if(type === 'epPreview' || type === 'ep2preview') document.querySelectorAll('[data-lila-replay]').forEach(b => b.addEventListener('click', () => open(b.dataset.lilaReplay, { replay:true })));
+    if(type === 'epPreview' || type === 'ep2preview' || type === 'epDone') document.querySelectorAll('[data-lila-replay]').forEach(b => b.addEventListener('click', () => open(b.dataset.lilaReplay, { replay:true })));
+    if(type === 'epDone') document.querySelectorAll('[data-lila-open]').forEach(b => b.addEventListener('click', () => openModal(b.dataset.lilaOpen)));
   },
   itemInfo,
   /* read-only peek for testing/debugging */

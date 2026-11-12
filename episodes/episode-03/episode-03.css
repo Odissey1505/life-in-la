@@ -1,0 +1,236 @@
+/* =========================================================================
+   LIFE IN LA — Episode 3 "NEW HOME" · scene art + interactions
+   (the player itself is styled in episodes/engine/lila-engine.css)
+   ========================================================================= */
+
+/* ---------- people on screen (drawn cast layer, inside the background so the camera moves it too) ---------- */
+.ep3-cast{ position:absolute; inset:0; z-index:3; pointer-events:none; container-type:size; }
+.ep3-cast > svg{ width:100%; height:100%; display:block; }
+.ep1:not([data-ep="ep3"]) .ep3-cast{ display:none; }
+.ep3-cast-art, .ep3-ph-cast{ position:absolute; inset:0; }
+.ep1-stage.has-photo .ep3-cast-art{ display:none; }                 /* photo background → the photo cast */
+.ep1-stage:not(.has-photo) .ep3-ph-cast{ display:none; }            /* drawn background → the drawn cast */
+/* the photo cast uses exactly the photo's box (see .ep1-pic-box in lila-engine.css) */
+.ep3-ph-cast{ inset:auto; left:50%; top:50%; width:max(100cqw, calc(100cqh * 1672 / 941)); height:max(100cqh, calc(100cqw * 941 / 1672)); transform:translate(-50%,-50%); overflow:hidden; }
+@supports not (width:1cqw){ .ep3-ph-cast{ left:0; top:0; width:100%; height:100%; transform:none; } }
+/* phones: the bedroom keeps the desk with Alex's box (right side) in view */
+:is(.ep1-pic-box, .ep3-ph-cast)[data-ph="bedroom"]{ left:auto; right:0; transform:translateY(-50%); }
+.ep3-ph-fig{ position:absolute; transform-origin:50% 100%; animation:ep3PhIn .6s ease-out both;
+  left:calc(50% + (var(--x) - 50) * var(--k, 1) * 1% - var(--w) * var(--s, 1) * .5%);
+  width:calc(var(--w) * var(--s, 1) * 1%); height:calc(var(--h) * var(--s, 1) * 1%); }
+/* tall screens show only the middle of the photo — the people step closer together (and a little
+   further back) so they stay in the shot without hiding the room */
+@container (max-aspect-ratio: 1/1){ .ep3-ph-fig{ --k:.6; --s:.88; } }
+@container (max-aspect-ratio: 3/4){ .ep3-ph-fig{ --k:.36; --s:.76; } }
+@container (max-aspect-ratio: 3/4){ .ep3-ph-cast[data-n="1"] .ep3-ph-fig{ --k:.16; } }   /* one person → near the middle */
+.ep3-ph-fig img{ width:100%; height:100%; display:block; object-fit:contain; object-position:50% 100%; -webkit-user-select:none; user-select:none; pointer-events:none; }
+.ep3-ph-person img{ filter:drop-shadow(0 18px 26px rgba(0,0,0,.35)) saturate(.96); animation:ep1PhBreathe 4.8s ease-in-out infinite; animation-delay:var(--d, 0s); transform-origin:50% 100%; }
+.ep3-ph-dog img{ filter:drop-shadow(0 10px 10px rgba(0,0,0,.3)); }
+@keyframes ep3PhIn{ from{ opacity:0; transform:translateY(2%); } to{ opacity:1; transform:none; } }
+.ep3-ph-wag img{ animation:ep3PhWag 1.4s ease-in-out infinite; transform-origin:50% 100%; }
+@keyframes ep3PhWag{ 0%,100%{ transform:none; } 50%{ transform:translateY(-1.5%) rotate(-1deg); } }
+.ep3-ph-run{ animation:ep3PhRun 1.5s cubic-bezier(.3,.7,.3,1) both; }
+@keyframes ep3PhRun{
+  0%{ transform:translate(0,-120%) scale(.3); opacity:0; } 15%{ opacity:1; }
+  40%{ transform:translate(-8%,-70%) scale(.5); } 60%{ transform:translate(4%,-30%) scale(.75); } 75%{ transform:translate(0,-12%) scale(.9); }
+  100%{ transform:none; }
+}
+.ep3-ph-fetch{ animation:ep3PhFetch 1.7s ease-in-out both; }
+@keyframes ep3PhFetch{ 0%{ transform:none; } 45%{ transform:translate(90%,-14%) scale(.6); } 50%{ transform:translate(90%,-14%) scale(-.6,.6); } 100%{ transform:scale(-1,1); } }
+.ep3-ph-ball{ position:absolute; left:42.6%; top:81.5%; width:2.4%; pointer-events:none; filter:drop-shadow(2px 5px 3px rgba(0,0,0,.35)); }
+/* a whole photo laid exactly over the background photo (same box) — e.g. Buddy with your glove */
+.ep3-ph-plate{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; animation:ep3PlateIn .5s ease-out both; pointer-events:none; }
+.ep3-ph-plate.ep3-ph-dash{ animation:ep3PlateIn .35s ease-out both, ep3Dash .5s .3s ease-in-out 2; }
+@keyframes ep3PlateIn{ from{ opacity:0; } to{ opacity:1; } }
+@keyframes ep3Dash{ 0%,100%{ transform:none; } 30%{ transform:translateX(-.6%) rotate(-.25deg); } 70%{ transform:translateX(.6%) rotate(.25deg); } }
+/* phones see only a slice of the photo: pan to where the people are */
+:is(.ep1-pic-box, .ep3-ph-cast)[data-ph="entry"]{ left:calc((100cqw - max(100cqw, 100cqh * 1672 / 941)) * .74); transform:translateY(-50%); }
+:is(.ep1-pic-box, .ep3-ph-cast)[data-ph="hotelOut"]{ left:calc((100cqw - max(100cqw, 100cqh * 1672 / 941)) * .3); transform:translateY(-50%); }
+:is(.ep1-pic-box, .ep3-ph-cast)[data-ph="houseFront"]{ left:calc((100cqw - max(100cqw, 100cqh * 1672 / 941)) * .66); transform:translateY(-50%); }
+.ep3-cast .ep1-fig{ animation:ep1Breathe 5s ease-in-out infinite; transform-box:fill-box; transform-origin:50% 100%; }
+
+/* Buddy */
+.ep3-dog{ transform-box:fill-box; transform-origin:50% 100%; }
+.ep3-wag .ep3-tail{ transform-box:fill-box; transform-origin:100% 100%; animation:ep3Wag .5s ease-in-out infinite alternate; }
+@keyframes ep3Wag{ from{ transform:rotate(-7deg); } to{ transform:rotate(9deg); } }
+.ep3-run{ animation:ep3Run 1.5s cubic-bezier(.3,.7,.3,1) both; }
+@keyframes ep3Run{
+  0%{ transform:translate(-160px,-150px) scale(.42); opacity:0; }
+  15%{ opacity:1; }
+  35%{ transform:translate(-90px,-110px) scale(.55); } 45%{ transform:translate(-60px,-128px) scale(.62); }
+  60%{ transform:translate(-20px,-40px) scale(.8); } 70%{ transform:translate(0,-60px) scale(.9); }
+  100%{ transform:none; }
+}
+.ep3-fetch{ animation:ep3Fetch 1.7s ease-in-out both; }
+@keyframes ep3Fetch{ 0%{ transform:none; } 45%{ transform:translateX(560px) scale(.8); } 50%{ transform:translateX(560px) scale(-.8,.8); } 100%{ transform:scale(-1,1); } }
+
+/* scenery details */
+.ep3-beam{ animation:ep3Beam 9s ease-in-out infinite; }
+@keyframes ep3Beam{ 50%{ opacity:.55; } }
+.ep3-scroll{ transform-box:view-box; animation:ep3Scroll 16s linear infinite; }
+.ep3-scroll.fast{ animation-duration:2.6s; }
+@keyframes ep3Scroll{ from{ transform:translateX(0); } to{ transform:translateX(-1600px); } }
+.ep3-oven{ animation:ep3Oven 3s ease-in-out infinite; }
+@keyframes ep3Oven{ 50%{ opacity:.35; } }
+.ep1[data-ep="ep3"] .ep1-title-big{ font-size:clamp(52px, 10vw, 140px); letter-spacing:clamp(6px, 1.4vw, 18px); }
+
+/* ---------- Scene 1: the lock screen ---------- */
+.g-wake, .g-house, .g-note, .g-move{ justify-content:center; }
+.ep3-lock{ width:min(360px, 100%); padding:16px 14px 18px; border-radius:36px; background:linear-gradient(170deg, rgba(90,182,249,.55), rgba(36,52,71,.85)); border:2px solid rgba(255,255,255,.22);
+  box-shadow:0 30px 70px rgba(0,0,0,.55); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); animation:ep1Pop2b .35s ease both; }
+.ep3-lock-top{ display:flex; justify-content:flex-end; font-size:12px; opacity:.85; padding:0 8px; }
+.ep3-lock-time{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:64px; line-height:1; text-align:center; text-shadow:0 4px 18px rgba(0,0,0,.3); }
+.ep3-lock-date{ text-align:center; font-weight:700; margin:2px 0 12px; opacity:.9; }
+.ep3-lock-list{ display:grid; gap:8px; }
+.ep3-note-card{ display:flex; align-items:flex-start; gap:10px; width:100%; text-align:left; padding:10px 12px; border-radius:18px; border:1px solid rgba(255,255,255,.3); background:rgba(255,251,246,.92);
+  color:#1f2735 !important; transition:transform .15s, box-shadow .15s; position:relative; }
+.ep3-note-card:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,.25); }
+.ep3-note-card.read{ background:rgba(255,251,246,.78); }
+.ep3-note-card.old .ep3-note-app{ background:#3a4150; }
+.ep3-note-app{ width:34px; height:34px; flex-shrink:0; border-radius:10px; background:#FF8A3D; display:flex; align-items:center; justify-content:center; font-size:17px; }
+.ep3-note-body{ flex:1; min-width:0; display:grid; gap:2px; }
+.ep3-note-top{ display:flex; justify-content:space-between; gap:8px; font-size:13.5px; }
+.ep3-note-top small{ color:#6b7280; font-weight:700; font-size:11.5px; }
+.ep3-note-text{ font-size:14px; line-height:1.35; color:#2b3342; }
+.ep3-note-ua{ font-size:12.5px; color:#5a6475 !important; }
+.ep3-note-dot{ width:10px; height:10px; border-radius:50%; background:#FF8A3D; margin-top:4px; flex-shrink:0; }
+.ep3-note-ok{ color:#3e9a52; font-weight:800; }
+.ep3-lock-foot{ text-align:center; margin-top:10px; font-size:13px; font-weight:700; opacity:.9; }
+
+/* ---------- speaking moments ---------- */
+.ep3-su .ep3-su-rec{ margin:6px 0; }
+.ep3-su-type{ margin:6px 0; }
+.ep3-su-note{ margin:6px 0 0; }
+
+/* ---------- Useful English cards ---------- */
+.ep3-useful{ display:grid; gap:8px; margin:4px 0 2px; max-height:min(46vh, 420px); overflow:auto; }
+.ep3-useful.many{ grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); }
+.ep3-uc{ padding:10px 14px; border-radius:16px; background:rgba(255,255,255,.06); border:1px solid var(--line); border-left:3px solid var(--o, #FF8A3D); }
+.ep3-uc-en{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:18px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.ep3-uc-simple{ font-size:13.5px; opacity:.9; margin-top:2px; }
+.ep3-uc-ex{ font-size:13px; font-style:italic; opacity:.7; margin-top:4px; }
+
+/* ---------- Scene 5: choose a room ---------- */
+.ep3-house{ width:min(760px, 100%); }
+.ep3-house-h{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:19px; text-shadow:0 2px 10px #000; }
+.ep3-house-n{ font-family:'Nunito', sans-serif; font-weight:800; font-size:13.5px; padding:5px 12px; border-radius:999px; background:rgba(0,0,0,.45); }
+.ep3-house-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; }
+.ep3-room{ position:relative; display:flex; flex-direction:column; align-items:flex-start; gap:4px; padding:16px 16px 14px; border-radius:20px; border:1px solid var(--line); background:var(--glass2);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); text-align:left; transition:transform .15s, border-color .15s; }
+.ep3-room b{ font-family:'Baloo 2', sans-serif; font-size:19px; }
+.ep3-room small{ font-size:13px; opacity:.78; line-height:1.3; }
+.ep3-room-i{ font-size:30px; }
+.ep3-room:hover:not(.locked){ transform:translateY(-2px); border-color:var(--o); }
+.ep3-room.done{ border-color:rgba(109,187,117,.6); background:rgba(30,60,40,.78); }
+.ep3-room.done::after{ content:"✓"; position:absolute; top:10px; right:14px; color:#a9e6ae; font-weight:800; font-size:18px; }
+.ep3-room.locked{ opacity:.55; cursor:not-allowed; }
+.ep3-room.hot{ border-color:var(--o); box-shadow:0 0 0 3px rgba(255,138,61,.35); animation:ep3Hot 2s ease-in-out infinite; }
+@keyframes ep3Hot{ 50%{ box-shadow:0 0 0 9px rgba(255,138,61,0); } }
+
+/* ---------- Scene 5: house rules (three questions) ---------- */
+.ep3-l3{ display:grid; gap:8px; margin-top:6px; }
+.ep3-l3-q{ padding:8px 10px; border-radius:14px; background:rgba(255,255,255,.04); border:1px solid var(--line); }
+.ep3-l3-q.ok{ border-color:rgba(109,187,117,.55); }
+.ep3-l3-q .ep1-q{ margin:0 0 6px; font-size:15px; }
+.ep3-l3-opts{ display:flex; flex-wrap:wrap; gap:6px; }
+.ep3-l3-opts .ep1-opt{ width:auto; flex:1 1 180px; padding:8px 12px; font-size:14px; }
+.ep3-l3-q .ep1-good{ margin-top:4px; }
+.k-listen3 .ep1-text{ font-size:16px; }
+
+/* ---------- Scene 5: grammar discovery ---------- */
+.ep3-pol{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:8px 0; }
+.ep3-pol-o .ep1-opt-t{ font-size:17px; }
+.ep3-ladder{ display:grid; gap:6px; margin:6px 0 4px; }
+.ep3-lad{ display:flex; align-items:baseline; gap:12px; padding:9px 14px; border-radius:14px; background:rgba(255,255,255,.06); border:1px solid var(--line); }
+.ep3-lad b{ font-family:'Baloo 2', sans-serif; font-size:18px; min-width:190px; }
+.ep3-lad span{ font-size:13.5px; opacity:.8; }
+.ep3-lad:nth-child(2){ margin-left:14px; } .ep3-lad:nth-child(3){ margin-left:28px; } .ep3-lad.top{ margin-left:42px; border-color:rgba(255,138,61,.6); background:rgba(255,138,61,.12); }
+
+/* ---------- Scene 6: the box and the note ---------- */
+.ep3-box{ position:relative; width:min(520px, 92vw); filter:drop-shadow(0 26px 40px rgba(0,0,0,.55)); animation:ep1Pop2b .4s ease both; padding-top:30px; }
+.ep3-box svg{ width:100%; height:auto; display:block; overflow:visible; }
+.ep3-sticky{ position:absolute; left:50%; top:56%; transform:translateX(-50%) rotate(-4deg); width:46%; padding:12px 10px 14px; background:#ffe76a; color:#1f1f1f; text-align:center;
+  font-family:'Caveat', cursive; font-weight:700; font-size:clamp(22px, 4.6vw, 34px); line-height:1.05; box-shadow:0 10px 20px rgba(0,0,0,.35); animation:ep3Flutter 4s ease-in-out infinite; }
+.ep3-sticky span{ display:block; }
+.ep3-sticky span:last-child{ text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:4px; }
+.ep3-sticky.sm{ position:absolute; font-size:16px; padding:6px; width:58%; top:30%; animation:none; }
+@keyframes ep3Flutter{ 50%{ transform:translateX(-50%) rotate(-2deg) translateY(-2px); } }
+
+/* ---------- Scene 6: moving the box ---------- */
+.ep3-move{ position:relative; width:min(520px, 92vw); height:320px; }
+.ep3-move-desk{ position:absolute; left:0; right:0; top:150px; height:20px; border-radius:6px; background:#8a6a4e; box-shadow:0 10px 24px rgba(0,0,0,.4); }
+.ep3-move-box{ position:absolute; left:50%; top:40px; width:200px; height:110px; margin-left:-100px; border-radius:6px; background:linear-gradient(#d8ad74, #c69a63); box-shadow:inset 0 -10px 0 rgba(0,0,0,.08), 0 14px 26px rgba(0,0,0,.4); transition:transform .7s cubic-bezier(.3,.7,.2,1); }
+.ep3-move.s1 .ep3-move-box{ transform:translateY(-34px); }
+.ep3-move.s2 .ep3-move-box{ transform:translate(110px, 170px) rotate(4deg); }
+.ep3-move-cable{ position:absolute; width:150px; left:calc(50% + 160px); top:270px; opacity:0; transform:translateY(-10px); transition:opacity .3s, transform .5s; }
+.ep3-move.slip .ep3-move-cable{ opacity:1; transform:none; }
+.ep3-move-btn{ position:absolute; left:50%; bottom:0; transform:translateX(-50%); font-size:16px; padding:12px 20px; }
+.ep3-cable{ animation:ep3Cable 1.2s ease both; }
+@keyframes ep3Cable{ from{ stroke-dasharray:200; stroke-dashoffset:200; } to{ stroke-dasharray:200; stroke-dashoffset:0; } }
+
+/* ---------- Scene 7: the matching number ---------- */
+.ep3-match .ep1-ph-who b{ animation:ep3Num 1.4s ease-in-out 3; border-radius:6px; }
+@keyframes ep3Num{ 50%{ background:rgba(255,138,61,.35); box-shadow:0 0 0 6px rgba(255,138,61,.25); } }
+.ep3-match-p{ margin:0 0 8px; font-size:13.5px; color:#243447; }
+
+/* ---------- Final mission + reflection ---------- */
+.ep3-final{ width:min(1060px, 100%); }
+.ep3-final .ep1-talk{ grid-template-columns:1.2fr 1fr; }
+.ep3-fq{ margin-top:8px; padding:10px 14px; border-radius:16px; background:rgba(243,229,200,.12); border:1px solid rgba(243,229,200,.3); font-size:16px; line-height:1.4; display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.ep3-fq-who{ font-family:'Baloo 2', sans-serif; font-weight:800; color:#F3E5C8; }
+.ep3-fgoal{ margin:10px 0 4px !important; }
+.ep3-fgoals{ margin:4px 0 10px; padding-left:22px; display:grid; gap:2px; font-weight:700; font-size:14.5px; }
+.ep3-fgoals small{ display:block; font-weight:600; }
+.ep3-ftype{ display:grid; grid-template-columns:1fr 1.5fr; gap:14px; align-items:start; }
+.ep3-ftick{ padding:12px; border-radius:16px; background:rgba(255,255,255,.05); border:1px solid var(--line); }
+.ep3-fres{ display:grid; gap:8px; padding:14px; border-radius:18px; background:rgba(255,255,255,.05); border:1px solid var(--line); animation:ep1Pop2b .3s ease both; }
+.ep3-fres-list{ list-style:none; margin:0; padding:0; display:grid; gap:6px; }
+.ep3-fres-list li{ padding:8px 12px; border-radius:12px; background:rgba(255,255,255,.04); border:1px solid var(--line); font-weight:700; opacity:.65; }
+.ep3-fres-list li.ok{ opacity:1; border-color:rgba(109,187,117,.6); background:rgba(30,60,40,.5); }
+.ep3-fres-how{ margin:2px 0; font-weight:800; }
+.ep3-fres-text{ margin:0; padding:10px 14px; border-left:3px solid var(--o, #FF8A3D); background:rgba(255,255,255,.04); border-radius:0 12px 12px 0; font-style:italic; white-space:pre-wrap; max-height:140px; overflow:auto; }
+.ep3-fres-more{ margin:0; color:#ffd2b8; } .ep3-fres-more.ok{ color:#a9e6ae; }
+.ep3-reflect{ width:min(640px, 100%); display:grid; gap:12px; }
+.ep3-reflect-ta{ min-height:140px; font-family:'Caveat', cursive; font-size:22px; }
+
+/* ---------- ending + summary ---------- */
+.ep3-tbc{ letter-spacing:8px; font-size:clamp(30px, 6vw, 72px); }
+.ep3-next-t{ font-size:clamp(24px, 4.4vw, 52px); }
+.ep3-sum-grid{ grid-template-columns:repeat(4, 1fr); }
+.ep3-sum-rewards{ display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }
+.ep3-sum-phr{ text-align:left; }
+.ep3-sum-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+.ep3-chip{ padding:6px 12px; border-radius:999px; background:rgba(109,187,117,.18); border:1px solid rgba(109,187,117,.4); color:#cff3d3; font-weight:700; font-size:13.5px; }
+.ep3-ach-d{ display:block; font-weight:600; font-size:12px; opacity:.75; }
+.ep3-mem-img{ background-color:#9fd0e8; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px){
+  .ep3-sum-rewards, .ep3-ftype{ grid-template-columns:1fr; }
+  .ep3-final .ep1-talk{ grid-template-columns:1fr; }
+}
+@media (max-width: 720px){
+  .ep3-sum-grid{ grid-template-columns:repeat(2, 1fr); }
+  .ep3-house-grid{ grid-template-columns:1fr 1fr; gap:8px; }
+  .ep3-room{ padding:12px 10px; } .ep3-room b{ font-size:16px; } .ep3-room small{ font-size:12px; } .ep3-room-i{ font-size:24px; }
+  .ep3-pol{ grid-template-columns:1fr; }
+  .ep3-lad{ flex-direction:column; gap:0; } .ep3-lad b{ min-width:0; }
+  .ep3-lad:nth-child(n){ margin-left:0; }
+  .ep3-lock-time{ font-size:52px; }
+  .ep3-move{ height:280px; } .ep3-move-desk{ top:130px; } .ep3-move-box{ width:160px; height:90px; margin-left:-80px; }
+  .ep3-move.s2 .ep3-move-box{ transform:translate(60px, 150px) rotate(4deg); }
+  .ep3-move-cable{ left:calc(50% + 70px); top:240px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .ep3-ph-fig, .ep3-ph-fig img, .ep3-ph-plate, .ep3-run, .ep3-fetch, .ep3-scroll, .ep3-beam, .ep3-oven, .ep3-sticky, .ep3-wag .ep3-tail{ animation:none !important; }
+}
+body.reduced-motion .ep3-ph-fig, body.reduced-motion .ep3-ph-fig img, body.reduced-motion .ep3-ph-plate, body.reduced-motion .ep3-run, body.reduced-motion .ep3-fetch, body.reduced-motion .ep3-scroll, body.reduced-motion .ep3-wag .ep3-tail{ animation:none !important; }
+
+/* ---------- photos of Alex's box (the drawn box stays as the fallback) ---------- */
+.ep3-box-photo{ display:block; width:100%; height:auto; border-radius:16px; }
+.ep3-box:not(.no-photo){ padding-top:0; }
+.ep3-box:not(.no-photo) > svg, .ep3-box:not(.no-photo) > .ep3-sticky{ display:none; }
+.ep3-move-box[data-photo]{ top:-2px; width:230px; height:152px; margin-left:-115px; border-radius:0;
+  background-color:transparent; background-position:center bottom; background-size:contain; background-repeat:no-repeat; box-shadow:none; filter:drop-shadow(0 14px 18px rgba(0,0,0,.45)); }
+.ep3-move-box[data-photo] .ep3-sticky{ display:none; }
+@media (max-width: 600px){ .ep3-move-box[data-photo]{ top:12px; width:180px; height:118px; margin-left:-90px; } }

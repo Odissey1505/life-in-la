@@ -206,6 +206,9 @@ body.ep1-open{ overflow:hidden !important; }
 
 /* ---------- popovers, toasts, notifications ---------- */
 .ep1-pop{ position:absolute; z-index:60; left:50%; top:50%; transform:translate(-50%,-50%); width:min(440px, calc(100% - 28px)); max-height:80vh; overflow:auto;
+.ep1-hs-pics{ display:flex; gap:10px; justify-content:center; align-items:center; margin:2px 26px 12px; }
+.ep1-hs-pic{ display:block; max-width:100%; max-height:min(250px, 34vh); object-fit:contain; border-radius:12px; animation:ep1Pop2b .35s ease both; }
+.ep1-hs-pics.two .ep1-hs-pic{ flex:1 1 0; min-width:0; max-width:none; max-height:min(170px, 24vh); }
   background:var(--glass2); border:1px solid var(--line); border-radius:22px; padding:22px; backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); box-shadow:0 30px 80px rgba(0,0,0,.6); animation:ep1Pop .25s ease both; }
 @keyframes ep1Pop{ from{ opacity:0; transform:translate(-50%,-46%) scale(.96); } }
 .ep1-pop-x{ position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:50%; border:none; background:rgba(255,255,255,.1); }
