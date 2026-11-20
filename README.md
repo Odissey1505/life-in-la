@@ -4,6 +4,10 @@
 life-in-la/
 ├── index.html                  головна сторінка курсу (кімната, телефон, мапа, журнал…)
 ├── episodes/
+│   ├── engine/                 спільний програвач епізодів (lila-engine.js / .css)
+│   ├── episode-02/             Епізод 2 «First Night in LA»
+│   ├── episode-03/             Епізод 3 «New Home»
+│   ├── episode-04/             Епізод 4 «Meet Emily» (див. episodes/episode-04/README.md)
 │   └── episode-01/             Епізод 1 «Arrival»
 │       ├── episode-01.js       сцени, діалоги, міні-ігри, збереження
 │       ├── episode-01.css      вигляд епізоду
