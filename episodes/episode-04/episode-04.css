@@ -1,0 +1,331 @@
+/* =========================================================================
+   LIFE IN LA — Episode 4 "MEET EMILY" · scene art + interactions
+   (the player itself is styled in episodes/engine/lila-engine.css)
+   ========================================================================= */
+
+/* ---------- people on screen (inside the background, so the camera moves them too) ---------- */
+.ep4-cast{ position:absolute; inset:0; z-index:3; pointer-events:none; container-type:size; }
+.ep1:not([data-ep="ep4"]) .ep4-cast{ display:none; }
+.ep4-cast-art, .ep4-ph-cast{ position:absolute; inset:0; }
+.ep4-cast-art > svg{ width:100%; height:100%; display:block; }
+.ep4-ph-cast{ inset:auto; left:50%; top:50%; width:max(100cqw, calc(100cqh * 1672 / 941)); height:max(100cqh, calc(100cqw * 941 / 1672)); transform:translate(-50%,-50%); overflow:hidden; }
+@supports not (width:1cqw){ .ep4-ph-cast{ left:0; top:0; width:100%; height:100%; transform:none; } }
+.ep4-ph-fig{ position:absolute; bottom:0; transform-origin:50% 100%; animation:ep4PhIn .6s ease-out both;
+  left:calc(var(--x) * 1% - var(--w) * .5%); width:calc(var(--w) * 1%); height:calc(var(--h) * 1%); }
+.ep4-ph-fig img{ width:100%; height:100%; display:block; object-fit:contain; object-position:50% 100%; filter:drop-shadow(0 18px 26px rgba(0,0,0,.35)); }
+@keyframes ep4PhIn{ from{ opacity:0; transform:translateY(2%); } to{ opacity:1; transform:none; } }
+.ep4-emily{ animation:ep1Breathe 5s ease-in-out infinite; transform-box:fill-box; transform-origin:50% 100%; }
+.ep4-wave{ transform-box:fill-box; transform-origin:0% 100%; animation:ep4Wave 1.6s ease-in-out 3; }
+@keyframes ep4Wave{ 0%,100%{ transform:rotate(0); } 30%{ transform:rotate(-14deg); } 60%{ transform:rotate(10deg); } }
+.ep4-zzz{ animation:ep4Zzz 3.4s ease-in-out infinite; }
+@keyframes ep4Zzz{ 0%{ opacity:0; transform:translateY(8px); } 30%,70%{ opacity:.85; } 100%{ opacity:0; transform:translateY(-14px); } }
+.ep4-sleep{ animation:ep4Snore 3.4s ease-in-out infinite; transform-box:fill-box; transform-origin:50% 100%; }
+@keyframes ep4Snore{ 0%,100%{ transform:scaleY(1); } 50%{ transform:scaleY(1.03); } }
+.ep4-glow{ animation:ep4Glow 1.2s ease-in-out infinite alternate; }
+@keyframes ep4Glow{ from{ opacity:.55; } to{ opacity:1; } }
+.ep4-steam path{ animation:ep4Steam 2.8s ease-in-out infinite; transform-box:fill-box; transform-origin:50% 100%; }
+@keyframes ep4Steam{ 0%{ opacity:0; transform:translateY(10px) scaleY(.8); } 40%{ opacity:.35; } 100%{ opacity:0; transform:translateY(-20px) scaleY(1.1); } }
+.ep4-fluff-tail{ transform-box:fill-box; transform-origin:100% 100%; animation:ep4Wag .45s ease-in-out infinite alternate; }
+@keyframes ep4Wag{ from{ transform:rotate(-10deg); } to{ transform:rotate(12deg); } }
+.ep4-beam{ animation:ep4Beam 7s ease-in-out infinite alternate; }
+@keyframes ep4Beam{ from{ opacity:.75; } to{ opacity:1; } }
+
+/* ---------- teacher mode (👩‍🏫 in the top bar) ---------- */
+.ep1:not([data-ep="ep4"]) .ep4-tbtn, .ep1:not([data-ep="ep4"]) .ep4-teacher{ display:none !important; }
+.ep4-tbtn.on{ background:rgba(109,187,117,.35); border-color:rgba(109,187,117,.8); }
+.ep4-teacher{ position:absolute; z-index:46; top:calc(66px + env(safe-area-inset-top)); left:calc(14px + env(safe-area-inset-left)); max-width:calc(100% - 28px);
+  display:flex; flex-wrap:wrap; align-items:center; gap:4px; padding:5px 6px; border-radius:16px; background:rgba(12,16,24,.82); border:1px solid rgba(109,187,117,.5);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); box-shadow:0 10px 30px rgba(0,0,0,.4); font-size:13px; }
+.ep4-teacher button{ border:1px solid var(--line); background:rgba(255,255,255,.08); border-radius:999px; padding:6px 11px; font-weight:700; font-size:13px; white-space:nowrap; }
+.ep4-teacher button:hover:not(:disabled){ background:rgba(109,187,117,.28); }
+.ep4-teacher button:disabled{ opacity:.35; }
+.ep4-tc-where{ padding:0 6px; font-weight:800; color:#bfe8c4; white-space:nowrap; }
+.ep4-tc-sep{ width:1px; height:20px; background:var(--line); margin:0 2px; }
+.ep1[data-ep="ep4"]:has(.ep4-teacher:not([hidden])) .ep1-game{ top:calc(112px + env(safe-area-inset-top)); }
+.ep1[data-ep="ep4"]:has(.ep4-teacher:not([hidden])) .ep1-sheet{ padding-top:calc(112px + env(safe-area-inset-top)); }
+
+/* ---------- speaking turns (3 hint levels) ---------- */
+.ep1-dialog.k-sp4{ max-height:min(74vh, 680px); padding-bottom:0; }
+.k-sp4 .ep4-sp > .ep1-row{ position:sticky; bottom:0; z-index:2; margin:6px -22px 0; padding:10px 22px 14px; background:linear-gradient(to bottom, rgba(13,17,27,0), rgba(13,17,27,.94) 26%); }
+@media (max-width: 720px){ .k-sp4 .ep4-sp > .ep1-row{ margin:6px -16px 0; padding:10px 16px 14px; } .ep4-hl{ grid-template-columns:1fr !important; } }
+.k-sp4 .ep1-tools{ flex-wrap:wrap; }
+.ep4-sp{ display:flex; flex-direction:column; gap:8px; }
+.ep4-sp-ctx{ font-size:14px; color:#ffd9bd; }
+.ep4-sp-q{ display:flex; align-items:flex-start; gap:10px; flex-wrap:wrap; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:clamp(20px, 2.3vw, 27px); line-height:1.25; }
+.ep4-sp-who{ font-family:'Nunito', sans-serif; font-size:12px; font-weight:800; letter-spacing:.4px; text-transform:uppercase; padding:4px 9px; border-radius:999px; background:var(--c, #FF8A3D); color:#1a1208; margin-top:5px; }
+.ep4-sp-qt{ flex:1; min-width:200px; }
+.ep4-sp-meta{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:13.5px; opacity:.85; }
+.ep4-timer{ display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.08); font-weight:700; }
+.ep4-timer b{ font-family:'Baloo 2', sans-serif; font-size:16px; } .ep4-timer small{ opacity:.6; }
+.ep4-timer.on{ border-color:var(--o); } .ep4-timer.full{ background:rgba(109,187,117,.28); border-color:var(--g); }
+.ep4-sp-hints{ display:grid; gap:7px; }
+.ep4-sp-hints:empty{ display:none; }
+.ep4-hl{ display:grid; grid-template-columns:150px 1fr; align-items:center; gap:4px 10px; padding:6px 10px; border-radius:12px; background:rgba(255,255,255,.06); border:1px solid var(--line); }
+.ep4-hl-t{ font-size:11.5px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; opacity:.75; }
+.ep4-hl-ex .ep1-model{ margin:0; padding:7px 11px; }
+.ep4-hl-ex small{ grid-column:2; }
+.ep4-chips{ display:flex; flex-wrap:wrap; gap:6px; }
+.ep4-kw{ padding:4px 11px; border-radius:999px; background:rgba(90,182,249,.18); border:1px solid rgba(90,182,249,.45); color:#d6ecff; font-weight:700; font-size:14px; }
+.ep4-sp-type .ep1-ta{ width:100%; }
+.ep4-react-q{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:19px; } .ep4-react-q small{ font-family:'Nunito', sans-serif; font-weight:600; font-size:12.5px; opacity:.7; }
+.ep4-react{ display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:8px; margin:8px 0; }
+.ep4-react .ep1-opt{ margin:0; }
+
+/* ---------- useful English cards ---------- */
+.ep4-useful{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; margin:6px 0 4px; }
+.ep4-uc{ padding:11px 13px; border-radius:14px; background:rgba(255,255,255,.07); border:1px solid var(--line); }
+.ep4-uc.whole{ grid-column:1 / -1; background:rgba(255,138,61,.14); border-color:rgba(255,138,61,.45); }
+.ep4-uc-en{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:18px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.ep4-uc-simple{ font-size:14px; opacity:.88; margin-top:2px; }
+.ep4-uc-ex{ font-size:13.5px; font-style:italic; opacity:.7; margin-top:3px; }
+
+/* ---------- Scene 1: the location Emily shares ---------- */
+.ep4-pin{ display:flex; gap:10px; align-items:center; padding:8px; border-radius:14px; background:#fff; color:#243447; margin-bottom:8px; }
+.ep4-pin-svg{ width:150px; height:auto; flex-shrink:0; }
+.ep4-pin-t{ display:grid; gap:2px; font-size:14px; } .ep4-pin-t small{ opacity:.7; font-weight:700; }
+.ep4-pin-route{ animation:ep4Dash 1.2s linear infinite; }
+@keyframes ep4Dash{ to{ stroke-dashoffset:-30; } }
+
+/* ---------- Scene 2: the route map ---------- */
+.g-route, .g-order, .g-cup, .g-askq, .g-gallery{ justify-content:center; }
+.ep4-route{ width:min(1060px, 100%); display:grid; grid-template-columns:1.45fr 1fr; gap:14px; align-items:center; }
+.ep4-route-map{ border-radius:20px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.5); background:#eef2e6; }
+.ep4-route-svg{ display:block; width:100%; height:auto; }
+.ep4-rt{ transition:opacity .2s, stroke-width .2s; }
+.ep4-rt-hit{ cursor:pointer; pointer-events:stroke; }
+.ep4-rt.walked{ stroke-dasharray:10 12; animation:ep4Dash 1s linear infinite; }
+.ep4-route-side{ display:grid; gap:10px; padding:14px; border-radius:20px; background:var(--glass2); border:1px solid var(--line); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+.ep4-dir{ display:grid; gap:6px; padding-bottom:8px; border-bottom:1px solid var(--line); }
+.ep4-dir-row{ display:flex; flex-wrap:wrap; gap:6px; }
+.ep4-dir-t{ margin:2px 0 0; font-size:15px; line-height:1.45; color:#ffe9d6; font-style:italic; }
+.ep4-rt-btns{ display:grid; gap:7px; }
+.ep4-rt-b{ display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:14px; border:2px solid var(--line); background:rgba(255,255,255,.06); font-weight:800; font-size:16px; text-align:left; }
+.ep4-rt-b i{ width:26px; height:8px; border-radius:6px; background:var(--c); flex-shrink:0; }
+.ep4-rt-b:hover:not(:disabled){ border-color:var(--c); }
+.ep4-rt-b.on{ border-color:var(--c); background:rgba(255,255,255,.14); }
+.ep4-rt-b.tried{ opacity:.45; text-decoration:line-through; }
+
+/* ---------- Scene 2 → 3: the door ---------- */
+.ep4-door-cine{ background:#160f0a; perspective:1400px; }
+.ep4-door{ position:relative; width:min(560px, 80vw); height:min(78vh, 720px); }
+.ep4-door-in{ position:absolute; inset:0; border-radius:8px; background:radial-gradient(ellipse at center, #ffe2a0 0%, #c98a4a 45%, #3a2416 100%); }
+.ep4-door-l, .ep4-door-r{ position:absolute; top:0; bottom:0; width:50%; background:linear-gradient(180deg, #6b4630, #4a2f1e); border:10px solid #3a2416; transition:transform 1.3s cubic-bezier(.5,.1,.3,1); }
+.ep4-door-l{ left:0; transform-origin:0 50%; border-right-width:4px; }
+.ep4-door-r{ right:0; transform-origin:100% 50%; border-left-width:4px; }
+.ep4-door-l::after, .ep4-door-r::after{ content:''; position:absolute; left:14%; right:14%; top:12%; height:46%; border-radius:6px; background:linear-gradient(160deg, rgba(255,226,160,.55), rgba(255,226,160,.15)); }
+.ep4-door-sign{ position:absolute; z-index:1; left:50%; top:66%; transform:translateX(-30%); padding:4px 12px; border-radius:6px; background:#fff4e4; color:#6b4630; font-family:'Baloo 2', sans-serif; font-weight:800; letter-spacing:3px; }
+.ep4-door.open .ep4-door-l{ transform:rotateY(-78deg); }
+.ep4-door.open .ep4-door-r{ transform:rotateY(78deg); }
+
+/* ---------- Scene 3: the menu ---------- */
+.ep4-menu{ width:min(1020px, 100%); display:grid; grid-template-columns:1.15fr 1fr; gap:14px; align-items:start; }
+.ep4-menu-card{ padding:14px 16px; border-radius:18px; background:#2b2f2c; color:#f3efe6; box-shadow:0 24px 60px rgba(0,0,0,.55); border:8px solid #6b4630; }
+.ep4-menu-top{ text-align:center; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:24px; letter-spacing:4px; color:#ffd38a; margin-bottom:6px; }
+.ep4-menu-top small{ display:block; font-family:'Caveat', cursive; font-size:20px; letter-spacing:0; color:#f3efe6; opacity:.8; font-weight:600; }
+.ep4-mi{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:8px 12px; margin:4px 0; border-radius:14px; border:2px dashed transparent; background:transparent; color:#f3efe6 !important; font-size:16px; font-weight:800; transition:.15s; }
+.ep4-mi:hover{ background:rgba(255,255,255,.07); }
+.ep4-mi.on{ border-color:#ffd38a; background:rgba(255,211,138,.12); }
+.ep4-mi-i{ font-size:28px; }
+.ep4-mi-n{ flex:1; display:flex; flex-direction:column; font-family:'Caveat', cursive; font-size:25px; line-height:1.05; }
+.ep4-mi-n small{ font-family:'Nunito', sans-serif; font-weight:600; font-size:12.5px; opacity:.7; }
+.ep4-mi-p{ font-family:'Baloo 2', sans-serif; font-weight:800; color:#ffd38a; font-size:18px; }
+.ep4-menu-note{ margin-top:6px; font-size:11.5px; opacity:.6; text-align:center; }
+.ep4-menu-side{ display:grid; gap:9px; padding:14px; border-radius:18px; background:var(--glass2); border:1px solid var(--line); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+.ep4-seg{ display:flex; flex-wrap:wrap; gap:6px; }
+.ep4-seg-b{ display:inline-flex; align-items:center; gap:6px; padding:9px 14px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.07); font-weight:800; font-size:14.5px; }
+.ep4-seg-b:hover:not(:disabled){ background:rgba(255,138,61,.2); }
+.ep4-seg-b.on, .ep4-seg-b.on:hover:not(:disabled){ background:var(--o); color:#2a1400; border-color:transparent; }
+.ep4-seg-b:disabled{ opacity:.4; }
+.ep4-cupi{ display:inline-block; transform:scale(var(--k)); }
+.ep4-seg-sm .ep4-seg-b{ padding:5px 10px; font-size:12.5px; }
+.ep4-nomilk{ margin:0; font-size:14px; color:#ffe9b8; }
+.ep4-sent{ display:grid; gap:6px; padding:11px 13px; border-radius:14px; background:rgba(255,255,255,.06); border:1px dashed var(--line); }
+.ep4-sent.ok{ border-style:solid; border-color:rgba(109,187,117,.6); background:rgba(109,187,117,.1); }
+.ep4-sent-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+.ep4-sent-t{ margin:0; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:20px; line-height:1.25; }
+.ep4-sent-p{ font-size:14px; opacity:.85; } .ep4-sent-p b{ font-family:'Baloo 2', sans-serif; font-size:18px; color:#ffd38a; }
+
+/* ---------- Scene 3: the cup ---------- */
+.ep4-cup{ width:min(280px, 60vw); animation:ep4CupIn .7s cubic-bezier(.2,.9,.3,1.3) both; }
+.ep4-cup-svg{ display:block; width:100%; height:auto; filter:drop-shadow(0 26px 40px rgba(0,0,0,.55)); }
+@keyframes ep4CupIn{ from{ opacity:0; transform:translateY(30px) rotate(-8deg) scale(.8); } to{ opacity:1; transform:rotate(-3deg); } }
+
+/* ---------- questions for Emily ---------- */
+.ep4-ask{ width:min(880px, 100%); display:grid; gap:10px; padding:16px; border-radius:20px; background:var(--glass2); border:1px solid var(--line); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); box-shadow:0 24px 60px rgba(0,0,0,.45); }
+.ep4-ask-h{ display:flex; justify-content:space-between; align-items:center; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:20px; }
+.ep4-ask-n{ padding:3px 12px; border-radius:999px; background:rgba(255,255,255,.1); font-size:16px; }
+.ep4-ask-n.ok{ background:var(--g); color:#0e2a12; }
+.ep4-ask-how{ margin:0; font-size:14px; opacity:.85; }
+.ep4-ask-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:8px; }
+.ep4-aq{ position:relative; display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,.07); text-align:left; font-weight:800; font-size:15.5px; line-height:1.25; }
+.ep4-aq:hover{ background:rgba(255,138,61,.18); border-color:rgba(255,138,61,.6); }
+.ep4-aq.cur{ border-color:var(--o); background:rgba(255,138,61,.2); }
+.ep4-aq.done{ opacity:.82; }
+.ep4-aq.own{ border-style:dashed; }
+.ep4-aq-i{ font-size:22px; }
+.ep4-aq-ok{ position:absolute; top:6px; right:9px; color:var(--g); }
+.ep4-ask-a{ padding:11px 14px; border-radius:14px; background:#fffaf2; color:#2a1f1a; font-size:15.5px; line-height:1.45; animation:ep1Fade .25s ease both; }
+.ep4-ask-a b{ color:#c45d3c; }
+.ep4-ask-a .ep1-ua{ color:#5a4a3a; }
+.ep4-ask-foot{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+
+/* ---------- Scene 5: Emily's photos ---------- */
+.ep4-gal{ display:flex; flex-wrap:wrap; justify-content:center; gap:clamp(10px, 2vw, 26px); width:min(1060px, 100%); padding:8px 0; }
+.ep4-pol{ width:min(300px, 30vw); min-width:200px; padding:10px 10px 12px; border:none; border-radius:6px; background:#fbf8f2; color:#2a1f1a !important; transform:rotate(var(--r)); box-shadow:0 18px 40px rgba(0,0,0,.5); transition:transform .2s, box-shadow .2s; text-align:center; }
+.ep4-pol:hover{ transform:rotate(0) translateY(-4px); }
+.ep4-pol.on{ transform:rotate(0) translateY(-8px) scale(1.03); box-shadow:0 0 0 5px var(--o), 0 24px 50px rgba(0,0,0,.6); }
+.ep4-pol-ph{ aspect-ratio:4 / 3; overflow:hidden; border-radius:2px; background:#ddd; }
+.ep4-gal-svg, .ep4-gal-img{ display:block; width:100%; height:100%; object-fit:cover; }
+.ep4-pol-cap{ font-family:'Caveat', cursive; font-weight:700; font-size:24px; margin-top:6px; }
+.ep4-pol-q{ font-size:13.5px; font-weight:700; opacity:.7; }
+.ep4-gal-cap{ width:min(760px, 100%); padding:10px 14px; border-radius:14px; background:rgba(12,16,24,.78); border:1px solid var(--line); font-size:15px; }
+
+/* ---------- Scene 8: the final mission ---------- */
+.ep4-final{ width:min(1080px, 100%); display:grid; gap:12px; }
+.ep4-fm-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:14px; flex-wrap:wrap; }
+.ep4-fm-head h2{ margin:2px 0 0; font-family:'Baloo 2', sans-serif; font-size:clamp(22px, 2.6vw, 30px); }
+.ep4-fm-steps{ list-style:none; display:flex; gap:6px; margin:0; padding:0; flex-wrap:wrap; }
+.ep4-fm-steps li{ display:flex; align-items:center; gap:6px; padding:4px 10px 4px 4px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid var(--line); font-size:12.5px; max-width:220px; }
+.ep4-fm-steps li span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; opacity:.85; }
+.ep4-fm-steps li button{ width:28px; height:28px; flex-shrink:0; border-radius:50%; border:none; background:rgba(255,255,255,.14); font-weight:800; }
+.ep4-fm-steps li.cur{ border-color:var(--o); background:rgba(255,138,61,.16); }
+.ep4-fm-steps li.ok button{ background:var(--g); color:#0e2a12; }
+.ep4-fm-main{ display:grid; grid-template-columns:170px 1fr; gap:16px; align-items:start; }
+.ep4-fm-emily{ display:grid; justify-items:center; gap:4px; text-align:center; }
+.ep4-fm-ava{ width:150px; height:150px; border-radius:50%; overflow:hidden; box-shadow:0 0 0 5px rgba(255,138,61,.6), 0 20px 40px rgba(0,0,0,.45); }
+.ep4-fm-ava svg, .ep4-fm-ava img{ display:block; width:100%; height:100%; object-fit:cover; }
+.ep4-fm-emily b{ font-family:'Baloo 2', sans-serif; font-size:20px; } .ep4-fm-emily small{ opacity:.75; font-weight:700; }
+.ep4-fm-talk{ display:grid; gap:10px; }
+.ep4-fm-bub{ position:relative; display:flex; gap:10px; align-items:flex-start; justify-content:space-between; padding:16px 18px; border-radius:20px 20px 20px 6px; background:#fffaf2; color:#2a1f1a; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:clamp(19px, 2.2vw, 26px); line-height:1.28; box-shadow:0 14px 34px rgba(0,0,0,.35); }
+.ep4-fm-bt{ display:flex; gap:4px; flex-shrink:0; }
+.ep4-fm-bt .ep1-tool{ color:#2a1f1a; border-color:rgba(0,0,0,.18); }
+.ep4-fm-turn{ display:grid; gap:8px; padding:12px 14px; border-radius:16px; background:rgba(255,255,255,.06); border:1px solid var(--line); }
+.ep4-fm-hints{ display:grid; gap:7px; } .ep4-fm-hints:empty{ display:none; }
+.ep4-ok{ color:var(--g); margin-left:6px; }
+.ep4-fm-ask{ display:grid; gap:7px; }
+.ep4-fm-askn{ font-weight:800; } .ep4-fm-askn.ok b{ color:var(--g); }
+.ep4-fm-done{ margin:0; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:19px; color:#bfe8c4; }
+.ep4-fm-ctrl{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; padding:8px; border-radius:16px; background:rgba(0,0,0,.25); border:1px solid var(--line); }
+.ep4-fm-ctrl button{ border:1px solid var(--line); background:rgba(255,255,255,.08); border-radius:999px; padding:9px 14px; font-weight:800; font-size:14px; }
+.ep4-fm-ctrl button:hover:not(:disabled){ background:rgba(255,255,255,.16); }
+.ep4-fm-ctrl button.hot{ background:var(--g); color:#0e2a12; border-color:transparent; }
+.ep4-fm-ctrl button:disabled{ opacity:.35; }
+.ep4-fm-foot{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+.ep4-fm-foot small{ opacity:.7; max-width:640px; }
+.ep4-rubric h2{ margin:2px 0 0; font-family:'Baloo 2', sans-serif; }
+.ep4-rub-sum{ margin:0; font-weight:700; opacity:.85; }
+.ep4-rub{ display:grid; gap:8px; }
+.ep4-rub-row{ display:grid; grid-template-columns:minmax(180px, 1fr) 2fr; gap:10px; align-items:center; padding:9px 12px; border-radius:14px; background:rgba(255,255,255,.05); border:1px solid var(--line); }
+.ep4-rub-l{ display:grid; } .ep4-rub-l b{ font-family:'Baloo 2', sans-serif; font-size:17px; } .ep4-rub-l small{ opacity:.75; }
+.ep4-rub-scale{ display:grid; grid-template-columns:repeat(5, 1fr); gap:5px; }
+.ep4-rub-b{ display:grid; justify-items:center; gap:1px; padding:7px 4px; border-radius:12px; border:1px solid var(--line); background:rgba(255,255,255,.06); }
+.ep4-rub-b b{ font-family:'Baloo 2', sans-serif; font-size:19px; } .ep4-rub-b small{ font-size:10.5px; opacity:.75; line-height:1.1; text-align:center; }
+.ep4-rub-b.on{ background:var(--o); color:#2a1400; border-color:transparent; } .ep4-rub-b.on small{ opacity:.9; }
+.ep4-rub-note{ display:grid; gap:5px; font-weight:700; } .ep4-rub-note small{ opacity:.65; font-weight:600; }
+.ep4-rub-btns{ justify-content:space-between; flex-wrap:wrap; gap:8px; } .ep4-rub-btns > span{ display:flex; gap:8px; flex-wrap:wrap; }
+
+/* ---------- vocabulary review ---------- */
+.ep4-vr{ display:grid; grid-template-columns:repeat(auto-fill, minmax(170px, 1fr)); gap:8px; margin:10px 0; max-height:48vh; overflow:auto; padding:2px; }
+.ep4-vc{ position:relative; min-height:118px; padding:10px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,.07); text-align:left; }
+.ep4-vc-f, .ep4-vc-b{ display:grid; gap:4px; }
+.ep4-vc-f b{ font-family:'Baloo 2', sans-serif; font-size:17px; line-height:1.2; } .ep4-vc-f small{ opacity:.65; font-weight:700; font-size:11.5px; }
+.ep4-vc-b{ display:none; font-size:13px; } .ep4-vc-b i{ color:#d6ecff; } .ep4-vc-b em{ opacity:.75; }
+.ep4-vc.flip{ background:rgba(255,138,61,.16); border-color:rgba(255,138,61,.5); }
+.ep4-vc.flip .ep4-vc-f{ display:none; } .ep4-vc.flip .ep4-vc-b{ display:grid; }
+.ep4-vr-q{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:19px; }
+.ep4-vr-prac .ep1-row{ flex-wrap:wrap; gap:8px; }
+
+/* ---------- journal + summary ---------- */
+.ep4-jr-auto{ padding:12px 14px; border-radius:14px; background:#fffaf2; color:#2a1f1a; font-family:'Caveat', cursive; font-size:21px; line-height:1.35; max-height:34vh; overflow:auto; }
+.ep4-jr-q{ display:block; margin:12px 0 6px; font-weight:800; } .ep4-jr-q small{ opacity:.65; font-weight:600; }
+.ep4-jr-auto + .ep4-jr-q + .ep1-ua + .ep1-ta, #ep4jr{ width:100%; }
+.ep4-summary .ep1-sum{ width:min(1040px, 100%); gap:12px; padding-bottom:24px; }
+.ep4-summary{ padding-top:max(22px, env(safe-area-inset-top)); }
+.ep4-sum h2{ font-size:clamp(28px, 4vw, 46px); }
+.ep4-sum-sub{ margin:-4px auto 0; max-width:760px; font-size:16px; line-height:1.45; color:#ffe1d1; } .ep4-sum-sub b{ font-family:'Baloo 2', sans-serif; font-size:20px; display:block; }
+.ep4-sum-two{ display:grid; grid-template-columns:1.35fr 1fr; gap:12px; text-align:left; align-items:start; }
+.ep4-sum-l{ display:grid; gap:10px; }
+.ep4-sum-r{ display:grid; gap:8px; justify-items:center; }
+.ep4-sum-mems{ display:flex; gap:14px; justify-content:center; }
+.ep4-sum-mems .ep1-polaroid{ width:132px; padding:7px 7px 22px; } .ep4-sum-mems .ep1-polaroid-img{ height:92px; } .ep4-sum-mems .ep1-polaroid-cap{ font-size:17px; }
+.ep4-sum-mems .ep4-pol2{ transform:rotate(3deg); }
+.ep4-sum-memt{ font-size:12.5px; opacity:.75; }
+.ep4-sum-r .ep1-sum-next{ width:100%; }
+.ep4-sum-grid .ep1-stat{ padding:10px; }
+.ep4-sum-grid{ grid-template-columns:repeat(4, 1fr); }
+.ep4-sum-story{ display:grid; gap:4px; padding:10px 14px; border-radius:16px; background:rgba(255,255,255,.06); border:1px solid var(--line); text-align:left; }
+.ep4-ss{ display:flex; gap:10px; justify-content:space-between; flex-wrap:wrap; font-size:14px; border-bottom:1px dashed rgba(255,255,255,.1); padding:4px 0; }
+.ep4-ss:last-child{ border-bottom:none; } .ep4-ss span{ opacity:.75; } .ep4-ss b{ text-align:right; }
+.ep4-sum-fb{ display:grid; gap:6px; padding:10px 14px; border-radius:16px; background:rgba(109,187,117,.1); border:1px solid rgba(109,187,117,.4); text-align:left; }
+.ep4-sum-fb p{ margin:0; font-style:italic; }
+.ep4-rub-chip{ padding:4px 10px; border-radius:999px; background:rgba(255,255,255,.08); font-size:13px; } .ep4-rub-chip b{ color:#ffd38a; letter-spacing:1px; }
+.ep4-mem-img{ background-size:cover; background-position:center; }
+.ep4-tbc{ letter-spacing:6px; }
+.ep4-next-t{ color:#ffd38a; }
+
+/* ---------- People card (homepage): the friendship moments ---------- */
+.ep4-rel{ display:inline-flex; gap:2px; margin-left:4px; vertical-align:middle; }
+.ep4-rel span{ opacity:.25; filter:grayscale(1); font-size:13px; } .ep4-rel span.on{ opacity:1; filter:none; }
+
+/* ---------- smaller screens ---------- */
+@media (max-width: 900px){
+  .ep4-route, .ep4-menu{ grid-template-columns:1fr; }
+  .ep4-fm-main{ grid-template-columns:1fr; }
+  .ep4-fm-emily{ grid-template-columns:auto 1fr; justify-items:start; align-items:center; text-align:left; column-gap:12px; }
+  .ep4-fm-ava{ width:76px; height:76px; grid-row:span 2; }
+  .ep4-sum-grid{ grid-template-columns:repeat(2, 1fr); }
+  .ep4-sum-two{ grid-template-columns:1fr; }
+  .ep4-rub-row{ grid-template-columns:1fr; }
+}
+@media (max-width: 720px){
+  .ep4-teacher{ top:calc(94px + env(safe-area-inset-top)); left:6px; right:6px; max-width:none; justify-content:center; }
+  .ep4-teacher button{ padding:6px 9px; font-size:12px; }
+  .ep4-tc-where{ width:100%; text-align:center; }
+  .ep1[data-ep="ep4"]:has(.ep4-teacher:not([hidden])) .ep1-game{ top:calc(170px + env(safe-area-inset-top)); }
+  .ep1[data-ep="ep4"]:has(.ep4-teacher:not([hidden])) .ep1-sheet{ padding-top:calc(170px + env(safe-area-inset-top)); }
+  .ep4-pol{ width:44vw; min-width:0; }
+  .ep4-pol-cap{ font-size:19px; }
+  .ep4-rub-b small{ display:none; }
+  .ep4-fm-ctrl button{ padding:8px 10px; font-size:12.5px; }
+  .ep4-sp-q{ font-size:20px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .ep4-emily, .ep4-wave, .ep4-zzz, .ep4-sleep, .ep4-glow, .ep4-steam path, .ep4-fluff-tail, .ep4-beam, .ep4-pin-route, .ep4-rt.walked{ animation:none !important; }
+  .ep4-door-l, .ep4-door-r{ transition:none; }
+}
+.ep1-reduced .ep4-emily, .ep1-reduced .ep4-wave, .ep1-reduced .ep4-zzz, .ep1-reduced .ep4-sleep, .ep1-reduced .ep4-steam path, .ep1-reduced .ep4-beam{ animation:none !important; }
+
+/* the vocabulary review and journal windows: wider, and the ✕ always clickable */
+.ep1[data-ep="ep4"] .ep1-mbox .ep1-pop-x{ z-index:3; }
+.ep1[data-ep="ep4"] .ep1-mbox:has(.ep4-vr){ width:min(880px, 100%); }
+.ep1[data-ep="ep4"] .ep1-mbox:has(.ep4-jr-auto){ width:min(640px, 100%); }
+
+/* ---------- photos: cut-outs standing on the photo, the cup with the name, the photographed menu ---------- */
+.ep4-ph-fig{ bottom:calc(var(--b, 0) * 1%); }
+.ep4-ph-cup{ container-type:inline-size; }
+.ep4-ph-cup img{ filter:drop-shadow(0 10px 14px rgba(0,0,0,.35)); }
+.ep4-cupname{ position:absolute; left:6%; right:12%; top:50%; transform:translateY(-50%) rotate(-5deg); text-align:center; font-family:'Caveat', cursive; font-weight:700; color:#1d1d1f; line-height:1; white-space:nowrap; overflow:hidden; font-size:15cqw; pointer-events:none; }
+.ep4-cup-ph{ position:relative; container-type:inline-size; width:min(300px, 52vw, 36vh); }
+.ep4-cup-ph img{ display:block; width:100%; height:auto; filter:drop-shadow(0 26px 40px rgba(0,0,0,.55)); }
+.ep4-cup-ph .ep4-cupname{ font-size:15cqw; top:52%; }
+.ep4-menu-ph{ position:relative; border-radius:16px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.55); align-self:start; }
+.ep4-menu-ph img{ display:block; width:100%; height:auto; }
+.ep4-mrow{ position:absolute; left:7%; right:6%; top:calc(var(--t) * 1%); height:calc(var(--hh) * 1%); border-radius:14px; border:3px solid transparent; background:transparent; cursor:pointer; transition:background .15s, border-color .15s; }
+.ep4-mrow:hover{ background:rgba(255,211,138,.12); border-color:rgba(255,211,138,.45); }
+.ep4-mrow.on{ background:rgba(255,211,138,.18); border-color:#ffd38a; box-shadow:0 0 0 4px rgba(255,211,138,.25); }
+.ep4-mrow:focus-visible{ outline:3px solid #5ab6f9; outline-offset:2px; }
+
+/* ---------- photos, part 2: whole-frame scenes, names on photographed cups, the photo map, the phone map card ---------- */
+.ep4-ph-cast{ container-type:size; }
+.ep4-ph-full{ position:absolute; inset:0; animation:ep4FullIn .8s ease both; }
+.ep4-ph-full img{ position:absolute; inset:0; width:100%; height:100%; display:block; object-fit:cover; }
+@keyframes ep4FullIn{ from{ opacity:0; } to{ opacity:1; } }
+.ep4-ph-tagbox{ position:absolute; inset:0; animation:ep4FullIn .6s ease both; }
+.ep4-cupname.ep4-tag{ right:auto; transform:translate(-50%, -50%) rotate(var(--r, 0deg)); font-size:calc(var(--fs) * 1cqw); color:#2a1d14; opacity:.92; mix-blend-mode:multiply; overflow:visible; }
+.ep4-namepic{ position:relative; container-type:inline-size; width:min(520px, 100%); border-radius:12px; overflow:hidden; animation:ep1Pop2b .35s ease both; }
+.ep4-namepic img{ display:block; width:100%; height:auto; }
+.ep4-route-ph circle.ep4-rt-hit{ pointer-events:all; }
+.ep4-route-ph .ep4-rt.walked{ stroke-dasharray:30 34; }
+.ep4-pin-ph{ padding:0; background:none; overflow:hidden; border-radius:4.5% / 16%; box-shadow:0 8px 22px rgba(0,0,0,.25); }
+.ep4-pin-ph img{ display:block; width:100%; height:auto; }
+@media (prefers-reduced-motion: reduce){ .ep4-ph-full, .ep4-ph-tagbox{ animation:none; } }

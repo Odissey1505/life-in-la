@@ -230,6 +230,7 @@ const Sound = (function(){
       case 'home':     bed('lowpass', 200, 0.16); every(11000, () => { if(Math.random() < 0.35) blip('chirp'); }); break;
       case 'yard':     bed('lowpass', 900, 0.16); bed('bandpass', 2600, 0.015); every(3100, () => { if(Math.random() < 0.7) blip('chirp'); }); break;
       case 'dinner':   bed('lowpass', 240, 0.18); every(3400, () => { if(Math.random() < 0.4) blip('clink'); }); break;
+      case 'cafe':     bed('bandpass', 650, 0.24); bed('lowpass', 220, 0.2); every(2400, () => { if(Math.random() < 0.5) blip('clink'); }); every(9000, () => { if(Math.random() < 0.45) blip('steam'); }); break;
       case 'hotel':    bed('lowpass', 260, 0.12);
         [220, 277.2, 329.6, 415.3].forEach((f, i) => { const o = tone(f, 0.008); const lfo = ctx.createOscillator(), lg = ctx.createGain(); lfo.frequency.value = 0.07 + i * 0.03; lg.gain.value = 0.006; lfo.connect(lg).connect(o.frequency); lfo.start(); L.nodes.push(lfo, lg); });
         break;
@@ -271,6 +272,8 @@ const Sound = (function(){
       case 'steps':    [0, 0.42, 0.84, 1.26].forEach(t => { burst(t, 0.09, 0.32, 'lowpass', 260); note(70, t, 0.08, 0.12, 'triangle'); }); break;
       case 'bark':     [0, 0.32].forEach(t => { burst(t, 0.13, 0.35, 'bandpass', 700); note(330, t, 0.12, 0.08, 'sawtooth'); }); break;
       case 'door':     burst(0, 0.5, 0.18, 'bandpass', 500, 250); note(150, 0.35, 0.15, 0.15, 'triangle'); break;
+      case 'steam':    burst(0, 1.4, 0.07, 'highpass', 3200); break;
+      case 'snap':     burst(0, 0.05, 0.4, 'highpass', 2000); burst(0.09, 0.06, 0.3, 'bandpass', 1200); break;
       case 'mystery':  note(392, 0, 1.6, 0.07); note(466.2, 0.5, 1.6, 0.06); note(554.4, 1.0, 2.2, 0.05); break;
       case 'stomach': {
         const o = ctx.createOscillator(), g = ctx.createGain(), l = ctx.createOscillator(), lg = ctx.createGain(), fl = ctx.createBiquadFilter();
